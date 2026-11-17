@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1f3a5f">
+<title>SGC Desbravadores MSC</title>
+<style>
+:root{--azul:#1f3a5f;--azul2:#2c5282;--ouro:#d4a017;--verm:#b83232;--fundo:#f4f6f9;--borda:#dde3ea;--texto:#1d2733;--suave:#5f6b7a;--verde:#2f855a}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--texto);background:var(--fundo);font-size:14px}
+header{background:var(--azul);color:#fff;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+header h1{font-size:16px;margin:0 12px 0 0}
+header .esp{flex:1}
+header select{max-width:260px}
+header .quem{font-size:12px;opacity:.85}
+body{padding-bottom:84px}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:15;background:#fff;border-top:1px solid var(--borda);box-shadow:0 -2px 12px rgba(0,0,0,.07);
+  display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+  padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:0 0 auto;min-width:74px;display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:none;padding:2px 4px;
+  color:var(--suave);font:inherit;font-size:11px;cursor:pointer;scroll-snap-align:center;-webkit-tap-highlight-color:transparent}
+nav .ic{width:58px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center;transition:background .2s}
+nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+nav button.on{color:var(--azul);font-weight:600}
+nav button.on .ic{background:#dde8f5}
+nav button.on svg{stroke-width:2.3}
+@media(min-width:1100px){nav{justify-content:center}}
+.podio{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.podio div{background:#fff;border:1px solid var(--borda);border-radius:8px;padding:10px;text-align:center}
+.podio .md{width:40px;height:40px;border-radius:50%;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 6px}.podio b{display:block;color:var(--azul)}
+main{padding:16px;max-width:1240px;margin:0 auto}
+h3{margin:0 0 10px;font-size:15px;color:var(--azul)}
+.card{background:#fff;border:1px solid var(--borda);border-radius:8px;padding:14px;margin-bottom:14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--borda);border-left:4px solid var(--ouro);border-radius:8px;padding:10px 12px}
+.kpi .v{font-size:22px;font-weight:700;color:var(--azul)}
+.kpi .l{color:var(--suave);font-size:12px}
+.tw{overflow:auto;max-height:65vh}
+table{width:100%;border-collapse:collapse}
+th,td{padding:7px 8px;border-bottom:1px solid var(--borda);text-align:left;vertical-align:middle}
+th{background:#f8fafc;font-size:12px;color:var(--suave);position:sticky;top:0;z-index:1}
+tr.clic{cursor:pointer} tr.clic:hover td{background:#f7fafc}
+td.n,th.n{text-align:right}
+.btn{background:var(--azul);color:#fff;border:0;border-radius:6px;padding:8px 12px;cursor:pointer;font:inherit}
+.btn:disabled{opacity:.5;cursor:wait}
+.btn.sec{background:#fff;color:var(--azul);border:1px solid var(--azul)}
+header .btn.sec{background:transparent;color:#fff;border-color:rgba(255,255,255,.6)}
+.btn.del{background:var(--verm)}
+.btn.peq{padding:4px 9px;font-size:12px}
+.barra{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.barra h3{flex:1;margin:0}
+.barra input[type=search]{min-width:180px}
+input,select,textarea{font:inherit;padding:7px 8px;border:1px solid var(--borda);border-radius:6px;background:#fff;color:var(--texto)}
+td select,td input{padding:4px 6px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;padding:30px 10px;overflow:auto;z-index:20}
+.modal .caixa{background:#fff;border-radius:10px;padding:18px;width:100%;max-width:660px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--suave)}
+.form .full{grid-column:1/-1}
+@media(max-width:640px){.form{grid-template-columns:1fr}header h1{width:100%}}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;background:#e2e8f0}
+.tag.Alta{background:#fed7d7;color:#9b2c2c}.tag.Média{background:#feebc8;color:#9c4221}
+.tag.ok{background:#c6f6d5;color:#22543d}.tag.nao{background:#fed7d7;color:#9b2c2c}
+.lb{display:grid;grid-template-columns:110px 1fr 50px 110px;gap:10px;align-items:center;margin:6px 0}
+.bar{height:12px;background:#e2e8f0;border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ouro)}
+.muted{color:var(--suave)}
+.aviso{padding:30px;text-align:center;color:var(--suave)}
+#toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);z-index:30}
+#toast div{background:#2d3748;color:#fff;padding:10px 16px;border-radius:6px;margin-top:6px;max-width:90vw}
+#toast div.erro{background:var(--verm)}
+.login{max-width:380px;margin:10vh auto}
+.login h2{margin:0;color:var(--azul)}
+.chk{display:flex;align-items:center;gap:6px}
+.pfj{display:inline-flex;gap:4px}.pfj button{border:1px solid var(--borda);background:#fff;border-radius:5px;padding:4px 10px;cursor:pointer;font:inherit}
+.pfj button.on.P{background:var(--verde);color:#fff;border-color:var(--verde)}.pfj button.on.F{background:var(--verm);color:#fff;border-color:var(--verm)}.pfj button.on.J{background:#d69e2e;color:#fff;border-color:#d69e2e}
+.tag.med{background:#feebc8;color:#9c4221}
+.mx td{text-align:center;padding:5px 4px;font-weight:600}.mx td:first-child{text-align:left;font-weight:400}
+.mx .P{background:#c6f6d5;color:#22543d}.mx .A{background:#feebc8;color:#9c4221}.mx .F{background:#fed7d7;color:#9b2c2c}.mx .R,.mx .E{background:#edf2f7;color:#4a5568}
+.reqg{margin:10px 0 4px;font-weight:600;color:var(--azul)}.reql{display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-bottom:1px solid #f0f2f5}
+.modal .caixa.larga{max-width:900px}
+</style>
+</head>
+<body>
+<div id="app"><p style="padding:30px;text-align:center;color:#5f6b7a">A carregar o SGC…</p></div>
+<div id="toast"></div>
+<script>
+window.__sgcOk = false;
+window.__sgcErros = [];
+window.addEventListener('error', function (e) {
+  var txt = (e.message || 'erro') + (e.lineno ? ' (linha ' + e.lineno + ', coluna ' + e.colno + ')' : '');
+  try {
+    var ls = document.documentElement.outerHTML.split('\n');
+    for (var k = Math.max(0, e.lineno - 3); k < Math.min(ls.length, e.lineno + 1); k++) {
+      txt += '\n' + (k + 1) + ': ' + ls[k].slice(Math.max(0, e.colno - 80), e.colno + 80);
+    }
+  } catch (x) {}
+  window.__sgcErros.push(txt);
+});
+setTimeout(function () {
+  if (window.__sgcOk) return;
+  var det = window.__sgcErros.length ? '<p style="font-size:12px;color:#5f6b7a">Detalhe técnico (copie tudo isto):</p><pre style="font-size:11px;white-space:pre-wrap;background:#f4f6f9;padding:8px;border-radius:6px">' + window.__sgcErros.join('\n\n').replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</pre>' : '';
+  document.getElementById('app').innerHTML = '<div style="max-width:520px;margin:10vh auto;padding:20px;background:#fff;border:1px solid #dde3ea;border-radius:8px;font-family:sans-serif">' +
+    '<h3 style="color:#b83232;margin-top:0">O SGC não conseguiu arrancar</h3><p>O ficheiro <b>Index</b> no Apps Script está incompleto ou foi colado com erros.</p>' +
+    '<p>Abra o Index no Apps Script, apague tudo (Ctrl+A) e cole de novo todo o conteúdo do Index_codigo.txt. A última linha deve ser <code>&lt;/html&gt;</code>. Depois publique uma Nova versão.</p>' + det + '</div>';
+}, 5000);
+</script>
+<script>
+/* ===== Listas fixas ===== */
+const CLASSES = ['Amigo','Companheiro','Pesquisador','Pioneiro','Excursionista','Guia'];
+const IDADE_CLASSE = {Amigo:10,Companheiro:11,Pesquisador:12,Pioneiro:13,Excursionista:14,Guia:15};
+const ESTADOS = ['Inscrito','Em curso','Concluído','Investido'];
+const CARGOS = ['','Director','Director Associado','Secretário(a)','Tesoureiro(a)','Capelão','Conselheiro(a)','Conselheiro(a) Associado(a)','Instrutor(a)','Capitão de unidade','Secretário(a) de unidade'];
+const CATEGORIAS = ['','ADRA','Actividades Agrícolas','Actividades Missionárias e Comunitárias','Actividades Profissionais','Actividades Recreativas','Artes e Habilidades Manuais','Ciência e Saúde','Estudo da Natureza','Habilidades Domésticas','Crescimento Espiritual'];
+const TIPOS_PAG = ['Taxa anual','Caderno de classe','Uniforme','Evento','Outro'];
+const TIPOS_EV = ['Campori','Bons de Bíblia','Investidura','Formação','Feira / Exposição','Outro'];
+const PAPEL_TXT = {MSC:'Coordenação MSC',REGIONAL:'Regional',DIRECTOR:'Director de clube'};
+const SN = ['Sim','Não'], NS = ['Não','Sim'];
+const PILARES = ['Espiritual','Físico','Mental','Social'];
+const TIPOS_ACT = ['Reunião regular','Classe bíblica','Actividade missionária','Acampamento / Saída','Evento','Outro'];
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+/* ===== Estado ===== */
+const S = {token: sessionStorage.getItem('sgc_t'), u:null, ano:new Date().getFullYear(), regiao_id:'', clube_id:'',
+  regioes:[], clubes:[], eventos:[], requisitos:[], tab:'painel', dados:{}};
+
+const $ = (s, el) => (el || document).querySelector(s);
+const $$ = (s, el) => [...(el || document).querySelectorAll(s)];
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const porNome = (a, b) => String(a.nome).localeCompare(String(b.nome), 'pt');
+const pct = (a, b) => b ? (Math.round(a * 1000 / b) / 10).toLocaleString('pt-PT') + '%' : '—';
+const num = n => Number(n || 0).toLocaleString('pt-PT');
+
+function toast(msg, erro) {
+  const d = document.createElement('div');
+  d.textContent = msg; if (erro) d.className = 'erro';
+  $('#toast').appendChild(d); setTimeout(() => d.remove(), erro ? 6000 : 3000);
+}
+
+/* ===== Ligação ao servidor =====
+ * Dentro do Google (link /exec) usa google.script.run; fora (GitHub Pages) usa o endereço SERVIDOR. */
+const SERVIDOR = 'https://script.google.com/macros/s/AKfycbzu3D0cg97T3YCydCEq_BJ45G-To4q2kSEov6p1RgKTCYVMWWaCQn2ZgbFa30wM-hkV/exec';
+const NO_GOOGLE = !!(window.google && google.script && google.script.run);
+function rpc(fn, args) {
+  if (NO_GOOGLE) return new Promise((res, rej) => google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...args));
+  return fetch(SERVIDOR, {method: 'POST', redirect: 'follow', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({fn, args})})
+    .catch(() => { throw new Error('Sem ligação ao servidor do SGC. Verifique a internet e tente de novo.'); })
+    .then(r => r.text())
+    .then(t => { try { return JSON.parse(t); } catch (e) { throw new Error('O servidor do SGC não respondeu como esperado. A coordenação deve confirmar que a implementação está com acesso "Qualquer pessoa".'); } });
+}
+
+function call(accao, p) {
+  return rpc('api', [S.token, accao, p || {}]).then(r => {
+    if (r && r.ok) return r.data;
+    if (r && r.erro === 'SESSAO') { sair(true); throw new Error('Sessão expirada. Entre de novo.'); }
+    throw new Error(r ? r.erro : 'Erro desconhecido');
+  });
+}
+
+/* ===== Utilitários ===== */
+function idade(nasc, ref) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(nasc || '')) return '';
+  ref = ref || new Date().toISOString().slice(0, 10);
+  const [a, m, d] = nasc.split('-').map(Number), [ra, rm, rd] = ref.split('-').map(Number);
+  let i = ra - a; if (rm < m || (rm === m && rd < d)) i--; return i;
+}
+function classeSugerida(nasc) {
+  const i = idade(nasc, S.ano + '-12-31'); if (i === '') return '';
+  return CLASSES.find(c => IDADE_CLASSE[c] === Math.min(15, Math.max(10, i))) || '';
+}
+const nomeRegiao = id => (S.regioes.find(r => r.id === id) || {}).nome || '';
+const nomeClube = id => (S.clubes.find(c => c.id === id) || {}).nome || '';
+const nomeMembro = id => ((S.dados.Membros || []).find(m => m.id === id) || {}).nome || '';
+const nomeUnidade = id => ((S.dados.Unidades || []).find(u => u.id === id) || {}).nome || '';
+const optsRegioes = () => [['', '—']].concat(S.regioes.slice().sort(porNome).map(r => [r.id, r.nome]));
+const optsClubes = () => [['', '—']].concat(S.clubes.slice().sort(porNome).map(c => [c.id, c.nome + ' (' + c.igreja + ')']));
+const optsMembros = (vazio) => [['', vazio || '—']].concat((S.dados.Membros || []).filter(m => m.activo !== 'Não').sort(porNome).map(m => [m.id, m.nome]));
+const optsUnidades = () => [['', '—']].concat((S.dados.Unidades || []).slice().sort(porNome).map(u => [u.id, u.nome]));
+
+function csv(nome, cols, linhas) {
+  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const txt = '\ufeff' + [cols.map(c => q(c.l)).join(';')]
+    .concat(linhas.map(r => cols.map(c => q(c.f ? c.f(r) : r[c.k])).join(';'))).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([txt], {type: 'text/csv;charset=utf-8'}));
+  a.download = nome + '.csv'; document.body.appendChild(a); a.click(); a.remove();
+}
+
+function tabela(cols, linhas, clicavel) {
+  if (!linhas.length) return '<p class="aviso">Sem registos.</p>';
+  return `<table><thead><tr>${cols.map(c => `<th class="${c.n ? 'n' : ''}">${esc(c.l)}</th>`).join('')}</tr></thead><tbody>${
+    linhas.map((r, i) => `<tr data-i="${i}" class="${clicavel ? 'clic' : ''}">${cols.map(c => {
+      const v = c.f ? c.f(r) : r[c.k];
+      return `<td class="${c.n ? 'n' : ''}">${c.html ? v : esc(v)}</td>`;
+    }).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
+/* ===== Formulários ===== */
+function campoHtml(c, v) {
+  v = v ?? c.def ?? '';
+  const at = `name="${c.k}" ${c.req ? 'required' : ''} ${c.ro ? 'disabled' : ''}`;
+  let inp;
+  if (c.opt) {
+    const ops = typeof c.opt === 'function' ? c.opt() : c.opt;
+    inp = `<select ${at}>${ops.map(o => { const [val, lab] = Array.isArray(o) ? o : [o, o];
+      return `<option value="${esc(val)}" ${String(val) === String(v) ? 'selected' : ''}>${esc(lab)}</option>`; }).join('')}</select>`;
+  } else if (c.t === 'area') inp = `<textarea ${at} rows="2">${esc(v)}</textarea>`;
+  else inp = `<input ${at} type="${c.t || 'text'}" value="${esc(v)}" ${c.t === 'number' ? 'step="any" min="0"' : ''} ${c.ph ? `placeholder="${esc(c.ph)}"` : ''}>`;
+  return `<label class="${c.full ? 'full' : ''}">${esc(c.l)}${c.req ? ' *' : ''}${inp}</label>`;
+}
+
+function formModal(titulo, campos, reg, aoGuardar, aoApagar) {
+  const div = document.createElement('div');
+  div.className = 'modal';
+  div.innerHTML = `<div class="caixa"><h3>${esc(titulo)}</h3><form class="form">${campos.map(c => campoHtml(c, reg[c.k])).join('')}
+    <div class="full barra" style="justify-content:flex-end;margin:6px 0 0">
+      ${aoApagar ? '<button type="button" class="btn del" data-a="del">Apagar</button><span style="flex:1"></span>' : ''}
+      <button type="button" class="btn sec" data-a="x">Cancelar</button><button class="btn" data-a="ok">Guardar</button></div></form></div>`;
+  document.body.appendChild(div);
+  const fechar = () => div.remove();
+  $('[data-a=x]', div).onclick = fechar;
+  const bloquear = b => $$('button', div).forEach(x => x.disabled = b);
+  if (aoApagar) $('[data-a=del]', div).onclick = async () => {
+    if (!confirm('Apagar este registo?')) return;
+    bloquear(true);
+    try { await aoApagar(); fechar(); toast('Apagado.'); } catch (e) { toast(e.message, 1); bloquear(false); }
+  };
+  $('form', div).onsubmit = async e => {
+    e.preventDefault();
+    const vals = {};
+    campos.forEach(c => { const el = e.target.elements[c.k]; if (el && !el.disabled) vals[c.k] = el.value.trim(); });
+    bloquear(true);
+    try { await aoGuardar(vals); fechar(); toast('Guardado.'); } catch (er) { toast(er.message, 1); bloquear(false); }
+  };
+}
+
+/* ===== Componente de lista (CRUD) ===== */
+function crud(el, cfg) {
+  el.innerHTML = `<div class="card"><div class="barra"><h3>${esc(cfg.titulo)} <small class="muted" data-r="cnt"></small></h3>
+    ${cfg.extra || ''}<input type="search" placeholder="Procurar…" data-r="q"><button class="btn sec" data-r="csv">CSV</button>
+    ${cfg.criar !== false ? '<button class="btn" data-r="novo">+ Novo</button>' : ''}</div><div class="tw" data-r="tb"></div></div>`;
+  let filtradas = [];
+  const desenhar = () => {
+    const q = $('[data-r=q]', el).value.toLowerCase();
+    filtradas = cfg.linhas.filter(r => !q || cfg.colunas.some(c => String(c.f ? c.f(r) : r[c.k] ?? '').toLowerCase().includes(q)));
+    $('[data-r=cnt]', el).textContent = '(' + filtradas.length + ')';
+    $('[data-r=tb]', el).innerHTML = tabela(cfg.colunas, filtradas, cfg.editar !== false);
+    if (cfg.editar !== false) $$('tbody tr', el).forEach(tr => tr.onclick = () => abrir(filtradas[+tr.dataset.i]));
+  };
+  const abrir = reg => {
+    if (reg && cfg.podeEditar && !cfg.podeEditar(reg)) return toast(cfg.msgSemEdicao || 'Não pode alterar este registo.', 1);
+    const novo = !reg; reg = reg || Object.assign({}, cfg.novo || {});
+    const campos = typeof cfg.campos === 'function' ? cfg.campos(novo, reg) : cfg.campos;
+    formModal((novo ? 'Novo — ' : 'Editar — ') + cfg.titulo, campos, reg,
+      async vals => {
+        if (cfg.guardar) await cfg.guardar(vals, reg, novo);
+        else await call('guardar', {tabela: cfg.tabela, registo: Object.assign({}, cfg.novo || {}, reg, vals)});
+        await cfg.recarregar();
+      },
+      !novo && cfg.apagar !== false ? async () => { if (cfg.apagarFn) await cfg.apagarFn(reg); else await call('apagar', {tabela: cfg.tabela, id: reg.id}); await cfg.recarregar(); } : null);
+  };
+  $('[data-r=q]', el).oninput = desenhar;
+  $('[data-r=csv]', el).onclick = () => csv(cfg.titulo, cfg.colunas, filtradas);
+  if (cfg.criar !== false) $('[data-r=novo]', el).onclick = () => abrir(null);
+  desenhar();
+  if (cfg.depois) cfg.depois(el);
+}
+
+/* ===== Login e moldura ===== */
+function vistaLogin() {
+  $('#app').innerHTML = `<div class="login card"><h2>SGC Desbravadores</h2><p class="muted">Missão Sul de Luanda e Cabinda</p>
+    <form class="form" style="grid-template-columns:1fr"><label>Email<input name="email" type="email" required autocomplete="username"></label>
+    <label>Palavra-passe<input name="senha" type="password" required autocomplete="current-password"></label>
+    <button class="btn">Entrar</button></form></div>`;
+  $('form').onsubmit = e => {
+    e.preventDefault();
+    const b = $('button', e.target); b.disabled = true;
+    rpc('login', [e.target.elements.email.value, e.target.elements.senha.value]).then(r => {
+      b.disabled = false;
+      if (!r.ok) return toast(r.erro, 1);
+      S.token = r.data.token; sessionStorage.setItem('sgc_t', S.token); iniciar();
+    }).catch(er => { b.disabled = false; toast(er.message, 1); });
+  };
+}
+
+function sair(silencioso) {
+  if (!silencioso && S.token) rpc('api', [S.token, 'sair', {}]).catch(() => {});
+  sessionStorage.removeItem('sgc_t');
+  Object.assign(S, {token: null, u: null, clube_id: '', regiao_id: '', dados: {}, tab: 'painel'});
+  vistaLogin();
+}
+
+async function iniciar() {
+  try {
+    const d = await call('inicio');
+    Object.assign(S, {u: d.utilizador, regioes: d.regioes, clubes: d.clubes, eventos: d.eventos, requisitos: d.requisitos || []});
+    if (S.u.papel === 'DIRECTOR') S.clube_id = S.u.clube_id;
+    if (S.u.papel === 'REGIONAL') S.regiao_id = S.u.regiao_id;
+    moldura(); mostrar(S.tab);
+  } catch (e) {
+    if (!S.token) return vistaLogin();
+    $('#app').innerHTML = `<div class="login card"><h2>Não foi possível abrir o SGC</h2><p style="color:var(--verm)">${esc(e.message)}</p>
+      <p class="muted">Se o erro continuar, confirme que o Código.gs foi colado por inteiro e que publicou uma Nova versão.</p>
+      <div class="barra"><button class="btn" id="eTent">Tentar de novo</button><button class="btn sec" id="eSair">Voltar ao início de sessão</button></div></div>`;
+    $('#eTent').onclick = iniciar; $('#eSair').onclick = () => sair(true);
+  }
+}
+
+const ABAS = [['painel','Painel'],['membros','Membros'],['presencas','Presenças'],['classes','Classes'],['especialidades','Especialid.'],
+  ['merito','Mérito'],['financeiro','Seguro'],['eventos','Eventos'],['relatorio','Relatório'],['trimestral','T1–T4'],
+  ['clube','Clube'],['qualidade','Qualidade'],['admin','Admin']];
+const ICONES = {
+  painel: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
+  membros: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.8 0 4.5 1.9 4.5 4.5"/>',
+  presencas: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 12l3 3 5-6"/>',
+  classes: '<circle cx="12" cy="15" r="5"/><path d="M8.5 11 6 3h4l2 5 2-5h4l-2.5 8"/>',
+  especialidades: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+  merito: '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4M9.5 17h5v4h-5z"/>',
+  financeiro: '<path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>',
+  eventos: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  relatorio: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
+  trimestral: '<path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/>',
+  clube: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  qualidade: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
+  admin: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/>'};
+
+function moldura() {
+  const u = S.u, a = new Date().getFullYear();
+  const anos = [a + 1, a, a - 1, a - 2, a - 3];
+  $('#app').innerHTML = `<header><h1>SGC Desbravadores MSC</h1>
+    <select id="sAno">${anos.map(x => `<option ${x == S.ano ? 'selected' : ''}>${x}</option>`).join('')}</select>
+    ${u.papel === 'MSC' ? `<select id="sReg"><option value="">Todas as regiões</option>${S.regioes.slice().sort(porNome).map(r => `<option value="${r.id}" ${r.id === S.regiao_id ? 'selected' : ''}>${esc(r.nome)}</option>`).join('')}</select>` : ''}
+    ${u.papel === 'REGIONAL' ? `<span>${esc(nomeRegiao(u.regiao_id))}</span>` : ''}
+    ${u.papel !== 'DIRECTOR' ? '<select id="sClube"></select>' : `<span>${esc(nomeClube(S.clube_id))}</span>`}
+    <span class="esp"></span><span class="quem">${esc(u.nome)} · ${PAPEL_TXT[u.papel]}</span>
+    <button class="btn sec peq" id="bSenha">Palavra-passe</button><button class="btn sec peq" id="bSair">Sair</button></header>
+    <nav>${ABAS.filter(x => x[0] !== 'admin' || u.papel !== 'DIRECTOR').map(x => `<button data-t="${x[0]}" title="${x[1]}"><span class="ic"><svg viewBox="0 0 24 24">${ICONES[x[0]]}</svg></span>${x[1]}</button>`).join('')}</nav>
+    <main id="main"></main>`;
+  $('#sAno').onchange = e => { S.ano = +e.target.value; mostrar(S.tab); };
+  if ($('#sReg')) $('#sReg').onchange = e => { S.regiao_id = e.target.value; S.clube_id = ''; S.dados = {}; preencherClubes(); mostrar(S.tab); };
+  preencherClubes();
+  $$('nav button').forEach(b => b.onclick = () => mostrar(b.dataset.t));
+  $('#bSair').onclick = () => sair();
+  $('#bSenha').onclick = mudarSenha;
+}
+
+function preencherClubes() {
+  const s = $('#sClube'); if (!s) return;
+  const cl = S.clubes.filter(c => !S.regiao_id || c.regiao_id === S.regiao_id).sort(porNome);
+  s.innerHTML = '<option value="">— Todos os clubes —</option>' + cl.map(c => `<option value="${c.id}" ${c.id === S.clube_id ? 'selected' : ''}>${esc(c.nome)} (${esc(c.igreja)})</option>`).join('');
+  s.onchange = e => { S.clube_id = e.target.value; S.dados = {}; mostrar(S.tab); };
+}
+
+function mudarSenha() {
+  formModal('Mudar palavra-passe', [
+    {k: 'actual', l: 'Palavra-passe actual', t: 'password', req: 1, full: 1},
+    {k: 'nova', l: 'Nova palavra-passe (mín. 8)', t: 'password', req: 1},
+    {k: 'conf', l: 'Confirmar nova', t: 'password', req: 1}], {},
+    async v => { if (v.nova !== v.conf) throw new Error('As palavras-passe não coincidem.'); await call('mudarSenha', v); });
+}
+
+const VISTAS = {};
+async function mostrar(tab) {
+  S.tab = tab;
+  $$('nav button').forEach(b => { b.classList.toggle('on', b.dataset.t === tab); if (b.dataset.t === tab && b.scrollIntoView) b.scrollIntoView({inline: 'center', block: 'nearest', behavior: 'smooth'}); });
+  window.scrollTo && window.scrollTo(0, 0);
+  const m = $('#main');
+  m.innerHTML = '<p class="aviso">A carregar…</p>';
+  try { await VISTAS[tab](m); } catch (e) { m.innerHTML = `<p class="aviso">${esc(e.message)}</p>`; }
+}
+
+function precisaClube(m) {
+  if (S.clube_id) return false;
+  m.innerHTML = '<div class="card aviso">Escolha um clube no topo da página para ver esta secção.</div>';
+  return true;
+}
+
+async function dadosClube(tabs, forcar) {
+  if (S.dados._c !== S.clube_id) S.dados = {_c: S.clube_id};
+  const falta = tabs.filter(t => forcar || !S.dados[t]);
+  const res = await Promise.all(falta.map(t => call('listar', {tabela: t, clube_id: S.clube_id})));
+  falta.forEach((t, i) => S.dados[t] = res[i]);
+}
+
+async function recarregarClubes() {
+  S.clubes = await call('listar', {tabela: 'Clubes'});
+  preencherClubes();
+}
+
+/* ===== Painel ===== */
+VISTAS.painel = async m => {
+  const d = await call('painel', {ano: S.ano, regiao_id: S.regiao_id, clube_id: S.clube_id});
+  const kpi = (v, l) => `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`;
+  const max = Math.max(1, ...d.porClasse.map(c => c.inscritos));
+  const cols = [{k: 'nome', l: d.tipoGrupo}]
+    .concat(d.tipoGrupo === 'Região' ? [{k: 'clubes', l: 'Clubes', n: 1}] : [{k: 'igreja', l: 'Igreja'}])
+    .concat([{k: 'desbravadores', l: 'Desbravadores', n: 1}, {k: 'lideres', l: 'Líderes', n: 1},
+      {k: 'inscritos', l: 'Inscritos em classes', n: 1}, {l: 'Taxa de inscrição', n: 1, f: r => pct(r.inscritos, r.desbravadores)},
+      {k: 'investidos', l: 'Investidos', n: 1}, {l: 'Com seguro', n: 1, f: r => pct(r.seguro, r.total)}]);
+  m.innerHTML = `<div class="kpis">
+    ${kpi(num(d.clubes), 'Clubes activos')}${kpi(num(d.desbravadores), 'Desbravadores activos')}${kpi(num(d.lideres), 'Líderes activos')}
+    ${kpi(num(d.inscritos), 'Inscritos em classes ' + d.ano)}${kpi(pct(d.inscritos, d.desbravadores), 'Taxa de inscrição')}
+    ${kpi(num(d.investidos), 'Investidos ' + d.ano)}${kpi(pct(d.seguro, d.total), 'Membros com seguro')}${kpi(num(d.especialidades), 'Especialidades concluídas')}${kpi(d.assiduidade === null ? '—' : d.assiduidade.toLocaleString('pt-PT') + '%', 'Assiduidade ' + d.ano)}</div>
+    <div class="card"><h3>Classes progressivas ${d.ano}</h3>
+      ${d.porClasse.map(c => `<div class="lb"><span>${c.classe}</span><div class="bar"><i style="width:${c.inscritos / max * 100}%"></i></div><b>${num(c.inscritos)}</b><small class="muted">${num(c.investidos)} investidos</small></div>`).join('')}
+      <p class="muted" style="margin:10px 0 0">Desbravadores: ${num(d.sexo.M)} rapazes · ${num(d.sexo.F)} raparigas</p></div>
+    <div class="card"><div class="barra"><h3>Por ${d.tipoGrupo.toLowerCase()}</h3><button class="btn sec" id="csvG">CSV</button></div>
+      <div class="tw">${tabela(cols, d.grupos)}</div></div>`;
+  $('#csvG').onclick = () => csv('Painel ' + d.ano, cols, d.grupos);
+};
+
+/* ===== Membros ===== */
+const camposMembro = () => [
+  {k: 'nome', l: 'Nome completo', req: 1, full: 1},
+  {k: 'tipo', l: 'Tipo', opt: ['Desbravador', 'Líder']},
+  {k: 'sexo', l: 'Sexo', opt: [['', '—'], ['M', 'Masculino'], ['F', 'Feminino']], req: 1},
+  {k: 'data_nasc', l: 'Data de nascimento', t: 'date'},
+  {k: 'unidade_id', l: 'Unidade', opt: optsUnidades},
+  {k: 'cargo', l: 'Cargo', opt: CARGOS},
+  {k: 'baptizado', l: 'Baptizado', opt: NS},
+  {k: 'contacto', l: 'Contacto do membro', t: 'tel'},
+  {k: 'data_entrada', l: 'Data de entrada no clube', t: 'date'},
+  {k: 'encarregado_nome', l: 'Encarregado de educação'},
+  {k: 'encarregado_contacto', l: 'Contacto do encarregado', t: 'tel'},
+  {k: 'autorizacao_pais', l: 'Autorização dos pais', opt: NS},
+  {k: 'activo', l: 'Activo', opt: SN},
+  {k: 'obs', l: 'Observações', t: 'area', full: 1}];
+
+VISTAS.membros = async m => {
+  if (precisaClube(m)) return;
+  await dadosClube(['Membros', 'Unidades']);
+  crud(m, {
+    titulo: 'Membros — ' + nomeClube(S.clube_id), tabela: 'Membros', linhas: S.dados.Membros.slice().sort(porNome),
+    campos: camposMembro, novo: {clube_id: S.clube_id, tipo: 'Desbravador', activo: 'Sim', autorizacao_pais: 'Não', baptizado: 'Não'},
+    colunas: [{k: 'nome', l: 'Nome'}, {k: 'tipo', l: 'Tipo'}, {k: 'sexo', l: 'Sexo'}, {l: 'Idade', n: 1, f: r => idade(r.data_nasc)},
+      {l: 'Unidade', f: r => nomeUnidade(r.unidade_id)}, {k: 'cargo', l: 'Cargo'}, {k: 'encarregado_nome', l: 'Encarregado'},
+      {k: 'encarregado_contacto', l: 'Contacto encarregado'}, {k: 'activo', l: 'Activo'}],
+    recarregar: async () => { await dadosClube(['Membros'], true); VISTAS.membros(m); },
+    extra: '<button class="btn sec" data-r="imp">Importar Excel</button>',
+    depois: el => $('[data-r=imp]', el).onclick = () => importar({
+      titulo: 'Importar membros — ' + nomeClube(S.clube_id), colunas: COLS_MEMBROS,
+      nota: 'As unidades que não existirem são criadas. Se houver a coluna Classe, os desbravadores ficam inscritos em ' + S.ano + '. Membros já existentes (mesmo nome e data de nascimento) são ignorados.',
+      modelo: {nome: 'Modelo_importacao_membros.xlsx', linhas: [COLS_MEMBROS.map(c => c.l),
+        ['Ana Maria Domingos','Desbravador','F','12/04/2016','Pérolas','Amigo','','Não','','Maria Domingos','923000001','Sim','07/02/2026',''],
+        ['Pedro Kiala','Líder','M','03/09/1990','','','Conselheiro(a)','Sim','923000002','','','','01/03/2025','']]},
+      enviar: linhas => call('importarMembros', {clube_id: S.clube_id, ano: S.ano, linhas}),
+      depois: async () => { await dadosClube(['Membros', 'Unidades', 'Classes'], true); VISTAS.membros(m); }
+    })
+  });
+};
+
+/* ===== Classes ===== */
+const CORES_CLASSE = {Amigo: '#004593', Companheiro: '#e10017', Pesquisador: '#007649', Pioneiro: '#8b7e6e', Excursionista: '#900429', Guia: '#c8961e'};
+const reqsDe = classe => S.requisitos.filter(r => r.classe === classe).sort((a, b) => Number(a.ordem) - Number(b.ordem));
+const grupoReq = r => r.seccao || ('Pilar ' + r.pilar);
+function progresso(cl) {
+  const todos = reqsDe(cl.classe), rs = todos.filter(r => r.avancado !== 'Sim'), av = todos.filter(r => r.avancado === 'Sim');
+  if (!todos.length) return null;
+  const f = new Set((cl.cumpridos || '').split(',').filter(Boolean));
+  const n = rs.filter(r => f.has(r.id)).length, na = av.filter(r => f.has(r.id)).length;
+  return {n, t: rs.length, pct: rs.length ? Math.round(n * 100 / rs.length) : 0, na, ta: av.length};
+}
+
+VISTAS.classes = async m => {
+  if (precisaClube(m)) return;
+  await dadosClube(['Membros', 'Classes']);
+  const ano = String(S.ano), ref = ano + '-12-31';
+  const actual = {}; S.dados.Classes.filter(c => c.ano === ano).forEach(c => actual[c.membro_id] = c);
+  const ms = S.dados.Membros.filter(x => x.activo !== 'Não' && x.tipo === 'Desbravador').sort(porNome);
+  const sel = (ops, v, cls) => `<select class="${cls}">${ops.map(o => `<option ${o === v ? 'selected' : ''} value="${esc(o)}">${esc(o || '— não inscrito —')}</option>`).join('')}</select>`;
+  const celReq = x => { const c = actual[x.id]; if (!c) return '<span class="muted">—</span>'; const pg = progresso(c);
+    return pg ? `<button class="btn sec peq req" data-id="${x.id}" style="border-color:${CORES_CLASSE[c.classe]};color:${CORES_CLASSE[c.classe]}">${pg.n}/${pg.t} · ${pg.pct}%${pg.na ? ' <b>+' + pg.na + 'A</b>' : ''}</button>` : '<span class="muted" title="A coordenação ainda não carregou os requisitos desta classe">sem requisitos</span>'; };
+  m.innerHTML = `<div class="card"><div class="barra"><h3>Classes progressivas ${ano} — ${esc(nomeClube(S.clube_id))}</h3>
+    <span class="muted" id="resumo"></span><button class="btn sec" id="bSug">Preencher vazios com a classe sugerida</button>
+    <button class="btn sec" id="bPorReq">Marcar por requisito</button><button class="btn" id="bGuardar">Guardar alterações</button></div>
+    <p class="muted" style="margin-top:0">Só os desbravadores activos aparecem aqui. A classe sugerida é calculada pela idade a 31/12/${ano}. Os requisitos ficam disponíveis depois de guardar a classe.</p>
+    <div class="tw">${ms.length ? `<table><thead><tr><th>Nome</th><th class="n">Idade</th><th>Sugerida</th><th>Classe</th><th>Estado</th><th>Data de investidura</th><th>Requisitos</th></tr></thead><tbody>${
+      ms.map(x => { const c = actual[x.id] || {};
+        return `<tr data-id="${x.id}"><td>${esc(x.nome)}</td><td class="n">${idade(x.data_nasc, ref)}</td><td class="muted">${classeSugerida(x.data_nasc)}</td>
+        <td>${sel([''].concat(CLASSES), c.classe || '', 'c')}</td><td>${sel(ESTADOS, c.estado || 'Inscrito', 'e')}</td>
+        <td><input type="date" class="d" value="${esc(c.data_investidura || '')}"></td><td>${celReq(x)}</td></tr>`; }).join('')}</tbody></table>` : '<p class="aviso">Sem desbravadores activos.</p>'}</div></div>`;
+  const resumo = () => { const n = $$('select.c', m).filter(s => s.value).length; $('#resumo').textContent = `${n} de ${ms.length} inscritos (${pct(n, ms.length)})`; };
+  $$('select.c', m).forEach(s => s.onchange = resumo); resumo();
+  const recarregar = async () => { await dadosClube(['Classes'], true); VISTAS.classes(m); };
+  const guardarReq = async itens => { await call('definirRequisitos', {clube_id: S.clube_id, ano, itens}); await recarregar(); };
+  $$('button.req', m).forEach(b => b.onclick = () => {
+    const x = ms.find(y => y.id === b.dataset.id), c = actual[x.id];
+    const feitos = new Set((c.cumpridos || '').split(',').filter(Boolean));
+    const rs = reqsDe(c.classe);
+    const div = document.createElement('div'); div.className = 'modal';
+    const grupos = [...new Set(rs.map(grupoReq))];
+    div.innerHTML = `<div class="caixa larga"><h3 style="color:${CORES_CLASSE[c.classe]}">${esc(x.nome)} — ${esc(c.classe)} ${ano}</h3><p class="muted" id="rq"></p>
+      ${grupos.map(g => `<div class="reqg" style="color:${CORES_CLASSE[c.classe]}">${esc(g)}</div>${rs.filter(r => grupoReq(r) === g).map(r =>
+        `<label class="reql"><input type="checkbox" value="${r.id}" data-av="${r.avancado === 'Sim' ? 1 : 0}" ${feitos.has(r.id) ? 'checked' : ''}><span>${r.avancado === 'Sim' ? '<span class="tag med">Avançado</span> ' : ''}${esc(r.descricao)} <small class="muted">${esc(r.codigo || '')} · ${esc(r.pilar)}</small></span></label>`).join('')}`).join('')}
+      <div class="barra" style="justify-content:flex-end;margin-top:12px"><button class="btn sec" data-a="x">Cancelar</button><button class="btn" data-a="ok">Guardar</button></div></div>`;
+    document.body.appendChild(div);
+    const conta = () => { const reg = $$('input[data-av="0"]', div), av = $$('input[data-av="1"]', div), n = reg.filter(i => i.checked).length;
+      $('#rq', div).textContent = `Requisitos: ${n} de ${reg.length} (${reg.length ? Math.round(n * 100 / reg.length) : 0}%) — conta para a investidura` + (av.length ? ` · Avançados: ${av.filter(i => i.checked).length} de ${av.length}` : ''); };
+    $$('input', div).forEach(i => i.onchange = conta); conta();
+    $('[data-a=x]', div).onclick = () => div.remove();
+    $('[data-a=ok]', div).onclick = async e => { e.target.disabled = true;
+      try { await guardarReq([{membro_id: x.id, cumpridos: $$('input:checked', div).map(i => i.value)}]); div.remove(); toast('Requisitos guardados.'); }
+      catch (er) { toast(er.message, 1); e.target.disabled = false; } };
+  });
+  $('#bPorReq').onclick = () => {
+    const comReq = CLASSES.filter(k => reqsDe(k).length && ms.some(x => actual[x.id] && actual[x.id].classe === k));
+    if (!comReq.length) return toast('Não há desbravadores inscritos em classes com requisitos carregados.', 1);
+    const div = document.createElement('div'); div.className = 'modal';
+    div.innerHTML = `<div class="caixa larga"><h3>Marcar um requisito para vários desbravadores</h3>
+      <div class="form"><label>Classe<select id="prC">${comReq.map(k => `<option>${k}</option>`).join('')}</select></label><label class="full">Requisito<select id="prR"></select></label></div>
+      <div id="prL" style="margin-top:10px"></div>
+      <div class="barra" style="justify-content:flex-end;margin-top:12px"><button class="btn sec" data-a="x">Cancelar</button><button class="btn" data-a="ok">Guardar</button></div></div>`;
+    document.body.appendChild(div);
+    const enchR = () => { $('#prR', div).innerHTML = reqsDe($('#prC', div).value).map(r => `<option value="${r.id}">${esc(r.codigo || '')}${r.avancado === 'Sim' ? ' (Avançado)' : ''} — ${esc(r.descricao.length > 110 ? r.descricao.slice(0, 110) + '…' : r.descricao)}</option>`).join(''); enchL(); };
+    const enchL = () => { const k = $('#prC', div).value, rid = $('#prR', div).value;
+      const al = ms.filter(x => actual[x.id] && actual[x.id].classe === k);
+      $('#prL', div).innerHTML = `<label class="chk" style="margin-bottom:6px"><input type="checkbox" id="prT"> <b>Marcar todos</b></label>` + al.map(x =>
+        `<label class="reql"><input type="checkbox" class="m" value="${x.id}" ${(actual[x.id].cumpridos || '').split(',').includes(rid) ? 'checked' : ''}><span>${esc(x.nome)}</span></label>`).join('');
+      $('#prT', div).onchange = e => $$('input.m', div).forEach(i => i.checked = e.target.checked); };
+    $('#prC', div).onchange = enchR; $('#prR', div).onchange = enchL; enchR();
+    $('[data-a=x]', div).onclick = () => div.remove();
+    $('[data-a=ok]', div).onclick = async e => {
+      const rid = $('#prR', div).value;
+      const itens = $$('input.m', div).map(i => { const f = new Set((actual[i.value].cumpridos || '').split(',').filter(Boolean)); const tinha = f.has(rid);
+        if (i.checked) f.add(rid); else f.delete(rid); return tinha !== i.checked ? {membro_id: i.value, cumpridos: [...f]} : null; }).filter(Boolean);
+      if (!itens.length) return toast('Não há alterações.');
+      e.target.disabled = true;
+      try { await guardarReq(itens); div.remove(); toast(`Requisito actualizado em ${itens.length} desbravador(es).`); } catch (er) { toast(er.message, 1); e.target.disabled = false; }
+    };
+  };
+  $('#bSug').onclick = () => { $$('tbody tr', m).forEach(tr => { const s = $('select.c', tr); if (!s.value) s.value = $('td:nth-child(3)', tr).textContent; }); resumo(); };
+  $('#bGuardar').onclick = async e => {
+    const itens = $$('tbody tr', m).map(tr => ({membro_id: tr.dataset.id, classe: $('.c', tr).value, estado: $('.e', tr).value, data_investidura: $('.d', tr).value}))
+      .filter(it => { const c = actual[it.membro_id] || {};
+        return (c.classe || '') !== it.classe || (it.classe && ((c.estado || 'Inscrito') !== it.estado || (c.data_investidura || '') !== it.data_investidura)); });
+    if (!itens.length) return toast('Não há alterações.');
+    if (itens.some(it => actual[it.membro_id] && actual[it.membro_id].cumpridos && actual[it.membro_id].classe !== it.classe) &&
+      !confirm('Mudar a classe de um desbravador apaga os requisitos já marcados nessa classe. Continuar?')) return;
+    e.target.disabled = true;
+    try { const r = await call('definirClasses', {clube_id: S.clube_id, ano, itens}); toast(`Guardado: ${r.gravadas} actualizadas, ${r.removidas} removidas.`);
+      await recarregar();
+    } catch (er) { toast(er.message, 1); e.target.disabled = false; }
+  };
+};
+
+/* ===== Especialidades ===== */
+VISTAS.especialidades = async m => {
+  if (precisaClube(m)) return;
+  await dadosClube(['Membros', 'Especialidades']);
+  crud(m, {
+    titulo: 'Especialidades — ' + nomeClube(S.clube_id), tabela: 'Especialidades',
+    linhas: S.dados.Especialidades.slice().sort((a, b) => String(b.data_conclusao).localeCompare(a.data_conclusao)),
+    novo: {clube_id: S.clube_id},
+    campos: [{k: 'membro_id', l: 'Membro', opt: () => optsMembros(), req: 1, full: 1}, {k: 'especialidade', l: 'Especialidade', req: 1},
+      {k: 'categoria', l: 'Categoria', opt: CATEGORIAS}, {k: 'data_conclusao', l: 'Data de conclusão', t: 'date'},
+      {k: 'instrutor', l: 'Instrutor(a)'}, {k: 'obs', l: 'Observações', t: 'area', full: 1}],
+    colunas: [{l: 'Membro', f: r => nomeMembro(r.membro_id)}, {k: 'especialidade', l: 'Especialidade'}, {k: 'categoria', l: 'Categoria'},
+      {k: 'data_conclusao', l: 'Concluída em'}, {k: 'instrutor', l: 'Instrutor(a)'}],
+    recarregar: async () => { await dadosClube(['Especialidades'], true); VISTAS.especialidades(m); }
+  });
+};
+
+/* ===== Seguro e taxas ===== */
+VISTAS.financeiro = async m => {
+  if (precisaClube(m)) return;
+  await dadosClube(['Membros', 'Pagamentos']);
+  const ano = String(S.ano);
+  const seg = {}; S.dados.Pagamentos.filter(p => p.tipo === 'Seguro' && p.ano === ano).forEach(p => seg[p.membro_id] = p);
+  const ms = S.dados.Membros.filter(x => x.activo !== 'Não').sort((a, b) => a.tipo.localeCompare(b.tipo) || porNome(a, b));
+  const valorBase = Object.values(seg)[0]?.valor || '';
+  m.innerHTML = `<div class="card"><div class="barra"><h3>Seguro anual ${ano}</h3><span class="muted" id="rs"></span>
+      <label class="chk">Valor por defeito (Kz) <input type="number" id="vb" value="${esc(valorBase)}" style="width:110px" min="0"></label>
+      <button class="btn sec" id="bTodos">Marcar todos</button><button class="btn" id="bSeg">Guardar seguro</button></div>
+      <div class="tw">${ms.length ? `<table><thead><tr><th>Pago</th><th>Nome</th><th>Tipo</th><th>Valor (Kz)</th></tr></thead><tbody>${ms.map(x => {
+        const p = seg[x.id]; return `<tr data-id="${x.id}"><td><input type="checkbox" class="p" ${p ? 'checked' : ''}></td><td>${esc(x.nome)}</td><td>${x.tipo}</td>
+        <td><input type="number" class="v" min="0" style="width:110px" value="${esc(p ? p.valor : '')}"></td></tr>`; }).join('')}</tbody></table>` : '<p class="aviso">Sem membros activos.</p>'}</div></div>
+    <div id="pag"></div>`;
+  const rs = () => { const n = $$('.p', m).filter(c => c.checked).length; $('#rs').textContent = `${n} de ${ms.length} com seguro (${pct(n, ms.length)})`; };
+  $$('.p', m).forEach(c => c.onchange = () => { const v = $('.v', c.closest('tr')); if (c.checked && !v.value) v.value = $('#vb').value; rs(); });
+  rs();
+  $('#bTodos').onclick = () => { $$('tbody tr', m).forEach(tr => { if (!tr.dataset.id) return; const c = $('.p', tr); if (!c) return; c.checked = true; const v = $('.v', tr); if (!v.value) v.value = $('#vb').value; }); rs(); };
+  $('#bSeg').onclick = async e => {
+    const itens = $$('tr[data-id]', m).filter(tr => $('.p', tr)).map(tr => ({membro_id: tr.dataset.id, pago: $('.p', tr).checked, valor: $('.v', tr).value}))
+      .filter(it => { const p = seg[it.membro_id]; return !!p !== it.pago || (it.pago && p && String(p.valor) !== String(Number(it.valor))); });
+    if (!itens.length) return toast('Não há alterações.');
+    const semValor = itens.find(it => it.pago && it.valor === '');
+    if (semValor) return toast('Indique o valor do seguro de todos os membros marcados.', 1);
+    e.target.disabled = true;
+    try { const r = await call('definirSeguro', {clube_id: S.clube_id, ano, itens}); toast(`Seguro guardado (${r.comSeguro} actualizados).`);
+      await dadosClube(['Pagamentos'], true); VISTAS.financeiro(m);
+    } catch (er) { toast(er.message, 1); e.target.disabled = false; }
+  };
+  const outros = S.dados.Pagamentos.filter(p => p.tipo !== 'Seguro' && p.ano === ano);
+  const total = outros.reduce((s, p) => s + Number(p.valor || 0), 0);
+  crud($('#pag'), {
+    titulo: `Outros pagamentos ${ano} · total ${num(total)} Kz`, tabela: 'Pagamentos', linhas: outros,
+    novo: {clube_id: S.clube_id, ano, data: new Date().toISOString().slice(0, 10)},
+    campos: [{k: 'tipo', l: 'Tipo', opt: TIPOS_PAG, req: 1}, {k: 'membro_id', l: 'Membro', opt: () => optsMembros('— Clube (geral) —')},
+      {k: 'descricao', l: 'Descrição', full: 1}, {k: 'valor', l: 'Valor (Kz)', t: 'number', req: 1}, {k: 'data', l: 'Data', t: 'date'},
+      {k: 'recibo', l: 'N.º do recibo'}, {k: 'obs', l: 'Observações', t: 'area', full: 1}],
+    colunas: [{k: 'data', l: 'Data'}, {k: 'tipo', l: 'Tipo'}, {l: 'Membro', f: r => nomeMembro(r.membro_id) || '(clube)'}, {k: 'descricao', l: 'Descrição'},
+      {l: 'Valor (Kz)', n: 1, f: r => num(r.valor)}, {k: 'recibo', l: 'Recibo'}],
+    recarregar: async () => { await dadosClube(['Pagamentos'], true); VISTAS.financeiro(m); }
+  });
+};
+
+/* ===== Eventos ===== */
+VISTAS.eventos = async m => {
+  const podeCriar = S.u.papel !== 'DIRECTOR';
+  m.innerHTML = '<div id="evl"></div><div id="evi"></div>';
+  const camposEv = () => [{k: 'nome', l: 'Nome do evento', req: 1, full: 1}, {k: 'tipo', l: 'Tipo', opt: TIPOS_EV},
+    S.u.papel === 'MSC' ? {k: 'nivel', l: 'Nível', opt: ['MSC', 'Regional']} : {k: 'nivel', l: 'Nível', opt: ['Regional'], ro: 1},
+    S.u.papel === 'MSC' ? {k: 'regiao_id', l: 'Região (se regional)', opt: optsRegioes} : {k: 'regiao_id', l: 'Região', opt: optsRegioes, ro: 1},
+    {k: 'data_inicio', l: 'Data de início', t: 'date'}, {k: 'data_fim', l: 'Data de fim', t: 'date'}, {k: 'local', l: 'Local'},
+    {k: 'taxa', l: 'Taxa por participante (Kz)', t: 'number'}, {k: 'estado', l: 'Inscrições', opt: ['Aberto', 'Fechado', 'Concluído']}];
+  crud($('#evl'), {
+    titulo: 'Eventos', tabela: 'Eventos', linhas: S.eventos.slice().sort((a, b) => String(b.data_inicio).localeCompare(a.data_inicio)),
+    criar: podeCriar, editar: podeCriar, campos: camposEv,
+    novo: {nivel: S.u.papel === 'MSC' ? 'MSC' : 'Regional', regiao_id: S.u.papel === 'REGIONAL' ? S.u.regiao_id : '', estado: 'Aberto', tipo: 'Campori'},
+    colunas: [{k: 'nome', l: 'Evento'}, {k: 'tipo', l: 'Tipo'}, {l: 'Nível', f: r => r.nivel === 'Regional' ? 'Regional · ' + nomeRegiao(r.regiao_id) : 'MSC'},
+      {k: 'data_inicio', l: 'Início'}, {k: 'data_fim', l: 'Fim'}, {k: 'local', l: 'Local'}, {l: 'Taxa (Kz)', n: 1, f: r => r.taxa ? num(r.taxa) : ''}, {k: 'estado', l: 'Inscrições'}],
+    recarregar: async () => { S.eventos = await call('listar', {tabela: 'Eventos'}); VISTAS.eventos(m); }
+  });
+  const ev = S.eventos.slice().sort((a, b) => String(b.data_inicio).localeCompare(a.data_inicio));
+  const box = $('#evi');
+  if (!ev.length) return;
+  box.innerHTML = `<div class="card"><div class="barra"><h3>Inscrições</h3><select id="selEv">${ev.map(e => `<option value="${e.id}">${esc(e.nome)} (${esc(e.estado || 'Aberto')})</option>`).join('')}</select></div><div id="evc"></div></div>`;
+  const desenhar = async () => {
+    const e = ev.find(x => x.id === $('#selEv').value), c = $('#evc');
+    c.innerHTML = '<p class="aviso">A carregar…</p>';
+    try {
+      if (!S.clube_id) {
+        const r = await call('resumoEvento', {evento_id: e.id, regiao_id: S.regiao_id});
+        const cols = [{k: 'clube', l: 'Clube'}, {k: 'igreja', l: 'Igreja'}, {k: 'regiao', l: 'Região'}, {k: 'desbravadores', l: 'Desbravadores', n: 1}, {k: 'lideres', l: 'Líderes', n: 1}, {k: 'total', l: 'Total', n: 1}];
+        const t = r.reduce((s, x) => s + x.total, 0);
+        c.innerHTML = `<div class="barra"><span class="muted" style="flex:1">${r.length} clubes · ${num(t)} participantes${e.taxa ? ' · ' + num(t * e.taxa) + ' Kz previstos' : ''}. Escolha um clube no topo para inscrever membros.</span><button class="btn sec" id="csvE">CSV</button></div><div class="tw">${tabela(cols, r)}</div>`;
+        $('#csvE').onclick = () => csv('Inscrições ' + e.nome, cols, r);
+        return;
+      }
+      await dadosClube(['Membros', 'Inscricoes']);
+      const ins = new Set(S.dados.Inscricoes.filter(i => i.evento_id === e.id).map(i => i.membro_id));
+      const ms = S.dados.Membros.filter(x => x.activo !== 'Não').sort((a, b) => a.tipo.localeCompare(b.tipo) || porNome(a, b));
+      const fechado = e.estado === 'Fechado' || e.estado === 'Concluído';
+      c.innerHTML = `<div class="barra"><span class="muted" id="ri" style="flex:1"></span>${fechado ? '<span class="tag nao">Inscrições fechadas</span>' : '<button class="btn" id="bIns">Guardar inscrições</button>'}</div>
+        <div class="tw"><table><thead><tr><th></th><th>Nome</th><th>Tipo</th><th>Unidade/Cargo</th></tr></thead><tbody>${ms.map(x => `<tr><td><input type="checkbox" value="${x.id}" ${ins.has(x.id) ? 'checked' : ''} ${fechado ? 'disabled' : ''}></td><td>${esc(x.nome)}</td><td>${x.tipo}</td><td>${esc(x.cargo || '')}</td></tr>`).join('')}</tbody></table></div>`;
+      const ri = () => { const ch = $$('input[type=checkbox]:checked', c).length; $('#ri').textContent = `${ch} inscritos de ${ms.length} membros activos${e.taxa ? ' · ' + num(ch * e.taxa) + ' Kz' : ''}`; };
+      $$('input[type=checkbox]', c).forEach(x => x.onchange = ri); ri();
+      if (!fechado) $('#bIns').onclick = async b => {
+        b.target.disabled = true;
+        try { await call('definirInscricoes', {evento_id: e.id, clube_id: S.clube_id, membro_ids: $$('input[type=checkbox]:checked', c).map(x => x.value)});
+          toast('Inscrições guardadas.'); await dadosClube(['Inscricoes'], true); desenhar();
+        } catch (er) { toast(er.message, 1); b.target.disabled = false; }
+      };
+    } catch (er) { c.innerHTML = `<p class="aviso">${esc(er.message)}</p>`; }
+  };
+  $('#selEv').onchange = desenhar; desenhar();
+};
+
+/* ===== Clube e unidades ===== */
+const camposClube = (regionalFixo) => [{k: 'nome', l: 'Nome do clube', req: 1}, {k: 'igreja', l: 'Igreja', req: 1}, {k: 'distrito', l: 'Distrito'},
+  {k: 'regiao_id', l: 'Região', opt: optsRegioes, ro: regionalFixo, req: !regionalFixo}, {k: 'director', l: 'Director(a)'}, {k: 'contacto', l: 'Contacto', t: 'tel'},
+  {k: 'data_fundacao', l: 'Data de fundação', t: 'date'}, {k: 'activo', l: 'Activo', opt: SN, ro: S.u.papel === 'DIRECTOR'}];
+
+VISTAS.clube = async m => {
+  if (precisaClube(m)) return;
+  await dadosClube(['Unidades', 'Membros']);
+  const c = S.clubes.find(x => x.id === S.clube_id) || {};
+  const lin = (l, v) => `<div><div class="muted" style="font-size:12px">${l}</div><b>${esc(v || '—')}</b></div>`;
+  m.innerHTML = `<div class="card"><div class="barra"><h3>${esc(c.nome)}</h3><button class="btn sec" id="bPdfF">Ficha do clube (PDF)</button><button class="btn sec" id="bPdfL">Lista nominal (PDF)</button><button class="btn sec" id="bEdC">Editar dados do clube</button></div>
+    <div class="kpis" style="margin:0">${lin('Igreja', c.igreja)}${lin('Distrito', c.distrito)}${lin('Região', nomeRegiao(c.regiao_id))}${lin('Director(a)', c.director)}${lin('Contacto', c.contacto)}${lin('Fundação', c.data_fundacao)}</div></div>
+    <div id="un"></div>`;
+  $('#bPdfF').onclick = e => baixarPdf({tipo: 'ficha', clube_id: S.clube_id, ano: S.ano}, e.target);
+  $('#bPdfL').onclick = e => baixarPdf({tipo: 'lista', clube_id: S.clube_id, ano: S.ano}, e.target);
+  $('#bEdC').onclick = () => formModal('Dados do clube', camposClube(S.u.papel !== 'MSC'), c,
+    async v => { await call('guardar', {tabela: 'Clubes', registo: Object.assign({}, c, v)}); await recarregarClubes(); VISTAS.clube(m); });
+  const qtd = id => S.dados.Membros.filter(x => x.unidade_id === id && x.activo !== 'Não').length;
+  crud($('#un'), {
+    titulo: 'Unidades', tabela: 'Unidades', linhas: S.dados.Unidades.slice().sort(porNome), novo: {clube_id: S.clube_id},
+    campos: [{k: 'nome', l: 'Nome da unidade', req: 1}, {k: 'sexo', l: 'Unidade de', opt: ['Rapazes', 'Raparigas', 'Mista']}, {k: 'conselheiro', l: 'Conselheiro(a)', full: 1}],
+    colunas: [{k: 'nome', l: 'Unidade'}, {k: 'sexo', l: 'De'}, {k: 'conselheiro', l: 'Conselheiro(a)'}, {l: 'Membros activos', n: 1, f: r => qtd(r.id)},
+      {l: 'Situação', html: 1, f: r => { const n = qtd(r.id); return n < 4 ? '<span class="tag Média">Abaixo de 4</span>' : n > 8 ? '<span class="tag Média">Acima de 8</span>' : '<span class="tag ok">4–8</span>'; }}],
+    recarregar: async () => { await dadosClube(['Unidades'], true); VISTAS.clube(m); }
+  });
+};
+
+/* ===== Qualidade dos dados ===== */
+VISTAS.qualidade = async m => {
+  const d = await call('qualidade', {ano: S.ano, regiao_id: S.regiao_id, clube_id: S.clube_id});
+  const cC = [{k: 'clube', l: 'Clube'}, {k: 'igreja', l: 'Igreja'}, {k: 'desbravadores', l: 'Desbravadores', n: 1}, {k: 'lideres', l: 'Líderes', n: 1},
+    {k: 'sem_classe', l: 'Sem classe ' + d.ano, n: 1}, {k: 'sem_seguro', l: 'Sem seguro ' + d.ano, n: 1}, {k: 'tem_director', l: 'Director registado'}, {k: 'problemas', l: 'Alertas', n: 1}];
+  const cP = [{l: 'Gravidade', html: 1, f: r => `<span class="tag ${r.gravidade}">${r.gravidade}</span>`, k: 'gravidade'}, {k: 'tipo', l: 'Alerta'}, {k: 'clube', l: 'Clube'}, {k: 'membro', l: 'Membro'}, {k: 'detalhe', l: 'Detalhe'}];
+  const tipos = [...new Set(d.problemas.map(p => p.tipo))].sort();
+  m.innerHTML = `<div class="card"><div class="barra"><h3>Resumo por clube ${d.ano}</h3><button class="btn sec" id="c1">CSV</button></div><div class="tw" style="max-height:40vh">${tabela(cC, d.porClube)}</div></div>
+    <div class="card"><div class="barra"><h3>Alertas (${num(d.total)})</h3><select id="fT"><option value="">Todos os tipos</option>${tipos.map(t => `<option>${esc(t)}</option>`).join('')}</select><button class="btn sec" id="c2">CSV</button></div>
+    ${d.total > d.problemas.length ? `<p class="muted">A mostrar os primeiros ${num(d.problemas.length)}. Filtre por região ou clube para ver o resto.</p>` : ''}<div class="tw" id="tp"></div></div>`;
+  const csvP = cP.map(c => c.k === 'gravidade' ? {k: 'gravidade', l: 'Gravidade'} : c);
+  let vis = d.problemas;
+  const des = () => { const t = $('#fT').value; vis = d.problemas.filter(p => !t || p.tipo === t); $('#tp').innerHTML = tabela(cP, vis); };
+  $('#fT').onchange = des; des();
+  $('#c1').onclick = () => csv('Qualidade por clube ' + d.ano, cC, d.porClube);
+  $('#c2').onclick = () => csv('Alertas ' + d.ano, csvP, vis);
+};
+
+/* ===== Administração ===== */
+VISTAS.admin = async m => {
+  const msc = S.u.papel === 'MSC';
+  m.innerHTML = (msc ? '<div id="ar"></div>' : '') + '<div id="ac"></div><div id="au"></div>' + (msc ? '<div id="aq"></div>' : '');
+  const [us, regs] = await Promise.all([call('listar', {tabela: 'Utilizadores'}), call('listar', {tabela: 'Regioes'})]);
+  S.regioes = regs;
+  const re = () => VISTAS.admin(m);
+  if (msc) crud($('#ar'), {
+    titulo: 'Regiões', tabela: 'Regioes', linhas: S.regioes.slice().sort(porNome), novo: {activo: 'Sim'},
+    campos: [{k: 'nome', l: 'Nome da região', req: 1}, {k: 'sigla', l: 'Sigla'}, {k: 'activo', l: 'Activa', opt: SN}],
+    colunas: [{k: 'nome', l: 'Região'}, {k: 'sigla', l: 'Sigla'}, {l: 'Clubes', n: 1, f: r => S.clubes.filter(c => c.regiao_id === r.id).length}, {k: 'activo', l: 'Activa'}],
+    recarregar: async () => { S.regioes = await call('listar', {tabela: 'Regioes'}); moldura(); mostrar('admin'); }
+  });
+  crud($('#ac'), {
+    titulo: 'Clubes', tabela: 'Clubes', linhas: S.clubes.filter(c => !S.regiao_id || c.regiao_id === S.regiao_id).sort(porNome),
+    novo: {activo: 'Sim', regiao_id: S.u.papel === 'REGIONAL' ? S.u.regiao_id : S.regiao_id},
+    campos: () => camposClube(!msc),
+    colunas: [{k: 'nome', l: 'Clube'}, {k: 'igreja', l: 'Igreja'}, {k: 'distrito', l: 'Distrito'}, {l: 'Região', f: r => nomeRegiao(r.regiao_id)}, {k: 'director', l: 'Director(a)'}, {k: 'activo', l: 'Activo'}],
+    recarregar: async () => { await recarregarClubes(); re(); }
+  });
+  crud($('#au'), {
+    titulo: msc ? 'Utilizadores' : 'Contas dos directores', tabela: 'Utilizadores', linhas: us.slice().sort(porNome), apagar: false,
+    novo: {papel: 'DIRECTOR', activo: 'Sim'},
+    campos: (novo) => [{k: 'email', l: 'Email', t: 'email', req: 1, ro: !novo}, {k: 'nome', l: 'Nome', req: 1},
+      {k: 'papel', l: 'Papel', opt: msc ? [['DIRECTOR', 'Director de clube'], ['REGIONAL', 'Regional'], ['MSC', 'Coordenação MSC']] : [['DIRECTOR', 'Director de clube']]},
+      {k: 'regiao_id', l: 'Região (para regionais)', opt: optsRegioes}, {k: 'clube_id', l: 'Clube (para directores)', opt: optsClubes, full: 1},
+      {k: 'activo', l: 'Conta activa', opt: SN}, {k: 'senha', l: novo ? 'Palavra-passe inicial (mín. 8)' : 'Nova palavra-passe (deixe vazio para manter)', t: 'password', req: novo}],
+    guardar: async (v, reg, novo) => { const senha = v.senha; delete v.senha; await call('guardarUtilizador', {registo: Object.assign({}, reg, v), senha, novo}); },
+    colunas: [{k: 'nome', l: 'Nome'}, {k: 'email', l: 'Email'}, {l: 'Papel', f: r => PAPEL_TXT[r.papel]},
+      {l: 'Âmbito', f: r => r.papel === 'DIRECTOR' ? nomeClube(r.clube_id) : r.papel === 'REGIONAL' ? nomeRegiao(r.regiao_id) : 'Toda a MSC'},
+      {k: 'activo', l: 'Activa'}, {k: 'ultimo_acesso', l: 'Último acesso'}],
+    recarregar: re
+  });
+  if (msc) {
+    const reqs = await call('listar', {tabela: 'Requisitos'});
+    const recR = async () => { S.requisitos = (await call('listar', {tabela: 'Requisitos'})).filter(r => r.activo !== 'Não'); re(); };
+    crud($('#aq'), {
+      titulo: 'Requisitos das classes', tabela: 'Requisitos', novo: {activo: 'Sim', pilar: 'Espiritual', classe: 'Amigo'},
+      linhas: reqs.slice().sort((a, b) => CLASSES.indexOf(a.classe) - CLASSES.indexOf(b.classe) || Number(a.ordem) - Number(b.ordem)),
+      campos: [{k: 'classe', l: 'Classe', opt: CLASSES}, {k: 'seccao', l: 'Secção do cartão'}, {k: 'pilar', l: 'Pilar', opt: PILARES}, {k: 'avancado', l: 'Avançado', opt: NS},
+        {k: 'ordem', l: 'Ordem', t: 'number'}, {k: 'codigo', l: 'Código (opcional)'}, {k: 'descricao', l: 'Descrição do requisito', t: 'area', req: 1, full: 1}, {k: 'activo', l: 'Activo', opt: SN}],
+      colunas: [{k: 'classe', l: 'Classe'}, {k: 'seccao', l: 'Secção'}, {k: 'avancado', l: 'Avançado'}, {k: 'pilar', l: 'Pilar'}, {k: 'codigo', l: 'Código'}, {k: 'descricao', l: 'Descrição'}, {k: 'activo', l: 'Activo'}],
+      recarregar: recR,
+      extra: '<button class="btn sec" data-r="imp">Importar Excel</button>',
+      depois: el => $('[data-r=imp]', el).onclick = () => importar({
+        titulo: 'Importar requisitos das classes', colunas: COLS_REQ,
+        nota: 'Use o ficheiro Requisitos_Classes_MSC.xlsx. Se o Pilar estiver vazio, é deduzido da secção. Voltar a importar o mesmo código actualiza o requisito em vez de o duplicar.',
+        modelo: {nome: 'Modelo_requisitos_classes.xlsx', linhas: [COLS_REQ.map(c => c.l), ['Amigo', 'Geral', 'Mental', 'Não', 1, 'AMI-GER-1', '(texto do requisito)'], ['Amigo', 'Geral', 'Mental', 'Sim', 6, 'AMI-GER-A1', '(texto do requisito avançado)']]},
+        enviar: linhas => call('importarRequisitos', {linhas}), depois: recR
+      })
+    });
+  }
+};
+
+/* ===== Mérito (pontuação) ===== */
+function periodoMerito() {
+  const a = S.ano, mes = S.mesM, t = Math.ceil(mes / 3), p2 = n => String(n).padStart(2, '0');
+  if (S.perM === 'ano') return {de: a + '-01-01', ate: a + '-12-31', txt: 'Ano ' + a};
+  if (S.perM === 'tri') return {de: a + '-' + p2(3 * t - 2) + '-01', ate: fimDoMes(a, 3 * t), txt: 'T' + t + ' ' + a};
+  return {de: a + '-' + p2(mes) + '-01', ate: fimDoMes(a, mes), txt: MESES[mes - 1] + ' ' + a};
+}
+const ptsTxt = v => (Number(v) > 0 ? '+' : '') + Number(v).toLocaleString('pt-PT');
+
+function crudCriterios(el, lista, recarregar) {
+  const msc = S.u.papel === 'MSC';
+  crud(el, {
+    titulo: S.clube_id ? 'Critérios de pontuação' : 'Critérios padrão da MSC', tabela: 'Criterios',
+    linhas: lista, novo: {clube_id: S.clube_id || '', categoria: 'Disciplina', pontos: 5, activo: 'Sim'},
+    criar: !!S.clube_id || msc,
+    campos: reg => [{k: 'nome', l: 'Critério', req: 1, full: 1}, {k: 'categoria', l: 'Categoria', opt: ['Assiduidade', 'Disciplina', 'Espiritual', 'Classes', 'Social', 'Serviço', 'Outro']},
+      {k: 'pontos', l: 'Pontos (use − para descontar)', t: 'number', req: 1}, {k: 'activo', l: 'Activo', opt: SN},
+      reg.automatico ? {k: 'descricao', l: 'Como é calculado', ro: 1, full: 1} : {k: 'descricao', l: 'Descrição (opcional)', full: 1}],
+    colunas: [{k: 'nome', l: 'Critério'}, {k: 'categoria', l: 'Categoria'}, {l: 'Pontos', n: 1, html: 1, f: r => `<b style="color:${Number(r.pontos) < 0 ? 'var(--verm)' : 'var(--verde)'}">${ptsTxt(r.pontos)}</b>`},
+      {l: 'Origem', f: r => r.automatico ? 'Automático (MSC)' : r.clube_id ? 'Do clube' : 'Padrão MSC'}, {k: 'activo', l: 'Activo'}],
+    podeEditar: r => msc || !!r.clube_id, msgSemEdicao: 'Critério padrão da MSC: só a coordenação o pode alterar. Pode criar critérios próprios do clube.',
+    guardar: async (v, reg) => { await call('guardarCriterio', {registo: Object.assign({}, reg, v)}); },
+    apagarFn: async reg => { const r = await call('apagarCriterio', {id: reg.id}); if (r.desactivado) toast('O critério já tinha pontos lançados: foi desactivado em vez de apagado.'); },
+    recarregar
+  });
+}
+
+VISTAS.merito = async m => {
+  if (!S.clube_id) {
+    if (S.u.papel !== 'MSC') return precisaClube(m);
+    const cr = await call('criterios', {});
+    m.innerHTML = '<div class="card aviso" style="padding:14px">Aqui a coordenação define os critérios padrão, que todos os clubes usam. Escolha um clube no topo para ver o ranking e lançar pontos.</div><div id="mc"></div>';
+    crudCriterios($('#mc'), cr, () => VISTAS.merito(m));
+    return;
+  }
+  if (!S.perM) { S.perM = 'mes'; }
+  if (!S.mesM || S.mesMAno !== S.ano) { S.mesM = mesPadrao(); S.mesMAno = S.ano; }
+  const per = periodoMerito();
+  const [rk, cr] = await Promise.all([call('ranking', {clube_id: S.clube_id, de: per.de, ate: per.ate}), call('criterios', {clube_id: S.clube_id}), dadosClube(['Membros', 'Unidades'])]);
+  const desb = rk.linhas.filter(l => l.tipo === 'Desbravador');
+  const top = desb.slice(0, 3), md = ['#d4a017', '#9aa5b1', '#b87333'];
+  const cU = [{l: '#', n: 1, f: (r) => rk.unidades.indexOf(r) + 1}, {k: 'unidade', l: 'Unidade'}, {k: 'membros', l: 'Desbravadores', n: 1}, {k: 'total', l: 'Pontos', n: 1}, {l: 'Média por membro', n: 1, f: r => r.media.toLocaleString('pt-PT')}];
+  const cI = [{k: 'posicao', l: '#', n: 1}, {k: 'nome', l: 'Nome'}, {k: 'unidade', l: 'Unidade'}, {k: 'presencas', l: 'Presenças', n: 1}, {k: 'faltas', l: 'Faltas', n: 1},
+    {k: 'especialidades', l: 'Especialid.', n: 1}, {k: 'auto', l: 'Automático', n: 1}, {k: 'manual', l: 'Lançado', n: 1}, {l: 'Total', n: 1, html: 1, k: 'total', f: r => `<b>${r.total.toLocaleString('pt-PT')}</b>`}];
+  const cH = [{k: 'data', l: 'Data'}, {k: 'membro', l: 'Membro'}, {k: 'criterio', l: 'Critério'}, {l: 'Pontos', n: 1, html: 1, k: 'pontos', f: r => `<b style="color:${r.pontos < 0 ? 'var(--verm)' : 'var(--verde)'}">${ptsTxt(r.pontos)}</b>`}, {k: 'obs', l: 'Obs.'}];
+  const va = rk.valoresAuto;
+  m.innerHTML = `<div class="card"><div class="barra"><h3>Mérito — ${esc(nomeClube(S.clube_id))}</h3>
+      <select id="mPer"><option value="mes" ${S.perM === 'mes' ? 'selected' : ''}>Mês</option><option value="tri" ${S.perM === 'tri' ? 'selected' : ''}>Trimestre</option><option value="ano" ${S.perM === 'ano' ? 'selected' : ''}>Ano</option></select>
+      ${S.perM !== 'ano' ? `<select id="mMes">${MESES.map((x, i) => `<option value="${i + 1}" ${i + 1 === S.mesM ? 'selected' : ''}>${x}</option>`).join('')}</select>` : ''}
+      <button class="btn" id="mLan">+ Lançar pontos</button></div>
+    <p class="muted" style="margin:0">${esc(per.txt)} · Pontos automáticos: presença ${ptsTxt(va.presenca || 0)}, falta sem justificação ${ptsTxt(va.falta || 0)}, actividade missionária ${ptsTxt(va.missionaria || 0)}, especialidade concluída ${ptsTxt(va.especialidade || 0)}.</p></div>
+    ${top.length ? `<div class="podio">${top.map((l, i) => `<div><div class="md" style="background:${md[i]}">${l.posicao}.º</div><b>${esc(l.nome)}</b><span class="muted">${esc(l.unidade || '')}</span><div>${l.total.toLocaleString('pt-PT')} pts</div></div>`).join('')}</div>` : ''}
+    <div class="card"><div class="barra"><h3>Ranking das unidades</h3></div><div class="tw">${tabela(cU, rk.unidades)}</div></div>
+    <div class="card"><div class="barra"><h3>Ranking individual</h3><select id="mTipo"><option value="D">Só desbravadores</option><option value="T">Todos (com líderes)</option></select><button class="btn sec" id="mCsv">CSV</button></div><div class="tw" id="mInd"></div></div>
+    <div class="card"><div class="barra"><h3>Pontos lançados (${rk.historico.length})</h3><span class="muted">Toque numa linha para apagar</span></div><div class="tw" style="max-height:40vh" id="mHist">${tabela(cH, rk.historico, true)}</div></div>
+    <div id="mCrit"></div>`;
+  let vis = desb;
+  const desInd = () => { vis = $('#mTipo').value === 'T' ? rk.linhas : desb; $('#mInd').innerHTML = tabela(cI, vis); };
+  $('#mTipo').onchange = desInd; desInd();
+  $('#mCsv').onclick = () => csv('Merito ' + per.txt, cI.map(c => c.k === 'total' ? {k: 'total', l: 'Total'} : c), vis);
+  $('#mPer').onchange = e => { S.perM = e.target.value; VISTAS.merito(m); };
+  if ($('#mMes')) $('#mMes').onchange = e => { S.mesM = +e.target.value; VISTAS.merito(m); };
+  $$('#mHist tbody tr', m).forEach(tr => tr.onclick = async () => {
+    const h = rk.historico[+tr.dataset.i];
+    if (!confirm(`Apagar ${ptsTxt(h.pontos)} pontos de ${h.membro} (${h.criterio}, ${h.data})?`)) return;
+    try { await call('apagar', {tabela: 'Pontos', id: h.id}); toast('Apagado.'); VISTAS.merito(m); } catch (e) { toast(e.message, 1); }
+  });
+  crudCriterios($('#mCrit'), cr, () => VISTAS.merito(m));
+  $('#mLan').onclick = () => lancarPontosModal(cr.filter(c => !c.automatico && c.activo !== 'Não'), () => VISTAS.merito(m));
+};
+
+function lancarPontosModal(crits, depois) {
+  if (!crits.length) return toast('Não há critérios activos para lançar.', 1);
+  const ms = S.dados.Membros.filter(x => x.activo !== 'Não').sort((a, b) => (a.tipo === b.tipo ? 0 : a.tipo === 'Desbravador' ? -1 : 1) || porNome(a, b));
+  const cats = [...new Set(crits.map(c => c.categoria || 'Outro'))];
+  const hj = hojeISO(), dataDef = String(S.ano) === hj.slice(0, 4) ? hj : S.ano + '-12-31';
+  const div = document.createElement('div'); div.className = 'modal';
+  div.innerHTML = `<div class="caixa larga"><h3>Lançar pontos</h3><div class="form">
+      <label>Data<input type="date" id="lpD" value="${dataDef}"></label>
+      <label>Critério<select id="lpC">${cats.map(k => `<optgroup label="${esc(k)}">${crits.filter(c => (c.categoria || 'Outro') === k).map(c => `<option value="${c.id}">${esc(c.nome)} (${ptsTxt(c.pontos)})</option>`).join('')}</optgroup>`).join('')}</select></label>
+      <label>Mostrar<select id="lpU"><option value="">Todos os membros</option>${optsUnidades().slice(1).map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join('')}</select></label>
+      <label>Observação (opcional)<input id="lpO"></label></div>
+    <div class="barra" style="margin-top:10px"><label class="chk"><input type="checkbox" id="lpT"> <b>Marcar todos os visíveis</b></label><span class="muted" id="lpN" style="margin-left:auto"></span></div>
+    <div class="tw" style="max-height:45vh" id="lpL"></div>
+    <div class="barra" style="justify-content:flex-end;margin-top:12px"><button class="btn sec" data-a="x">Cancelar</button><button class="btn" data-a="ok">Lançar</button></div></div>`;
+  document.body.appendChild(div);
+  const sel = new Set();
+  const conta = () => $('#lpN', div).textContent = sel.size + ' seleccionado(s)';
+  const enche = () => {
+    const u = $('#lpU', div).value, vis = ms.filter(x => !u || x.unidade_id === u);
+    $('#lpL', div).innerHTML = vis.map(x => `<label class="reql"><input type="checkbox" value="${x.id}" ${sel.has(x.id) ? 'checked' : ''}><span>${esc(x.nome)} <small class="muted">${x.tipo === 'Líder' ? 'Líder' : esc(nomeUnidade(x.unidade_id))}</small></span></label>`).join('') || '<p class="aviso">Sem membros.</p>';
+    $$('#lpL input', div).forEach(i => i.onchange = () => { i.checked ? sel.add(i.value) : sel.delete(i.value); conta(); });
+    $('#lpT', div).checked = false;
+  };
+  $('#lpU', div).onchange = enche;
+  $('#lpT', div).onchange = e => { $$('#lpL input', div).forEach(i => { i.checked = e.target.checked; e.target.checked ? sel.add(i.value) : sel.delete(i.value); }); conta(); };
+  enche(); conta();
+  $('[data-a=x]', div).onclick = () => div.remove();
+  $('[data-a=ok]', div).onclick = async e => {
+    if (!sel.size) return toast('Escolha pelo menos um membro.', 1);
+    e.target.disabled = true;
+    try { const r = await call('lancarPontos', {clube_id: S.clube_id, criterio_id: $('#lpC', div).value, data: $('#lpD', div).value, membro_ids: [...sel], obs: $('#lpO', div).value});
+      div.remove(); toast(`Pontos lançados a ${r.lancados} membro(s).`); depois();
+    } catch (er) { toast(er.message, 1); e.target.disabled = false; }
+  };
+}
+
+/* ===== PDF e Excel ===== */
+async function baixarPdf(p, btn) {
+  if (btn) btn.disabled = true;
+  try {
+    const r = await call('pdf', p);
+    const bytes = Uint8Array.from(atob(r.base64), c => c.charCodeAt(0));
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([bytes], {type: 'application/pdf'}));
+    a.download = r.nome; document.body.appendChild(a); a.click(); a.remove();
+    toast('PDF gerado: ' + r.nome);
+  } catch (e) { toast(e.message, 1); } finally { if (btn) btn.disabled = false; }
+}
+
+let _xlsx = null;
+function xlsx() {
+  if (window.XLSX) return Promise.resolve(window.XLSX);
+  return _xlsx = _xlsx || new Promise((res, rej) => {
+    const sc = document.createElement('script');
+    sc.src = ['https:', '', 'cdn.jsdelivr.net', 'npm', 'xlsx' + String.fromCharCode(64) + '0.18.5', 'dist', 'xlsx.full.min.js'].join('/');
+    sc.onload = () => res(window.XLSX);
+    sc.onerror = () => { _xlsx = null; rej(new Error('Não foi possível carregar o leitor de Excel. Verifique a ligação à internet.')); };
+    document.head.appendChild(sc);
+  });
+}
+const normCab = v => String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[*:]/g, '').replace(/\s+/g, ' ').trim();
+
+const COLS_MEMBROS = [
+  {k: 'nome', l: 'Nome', alias: ['nome', 'nome completo', 'nome do desbravador', 'nome do membro', 'nomes'], obrig: 1},
+  {k: 'tipo', l: 'Tipo', alias: ['tipo', 'tipo de membro', 'desbravador/lider']},
+  {k: 'sexo', l: 'Sexo', alias: ['sexo', 'genero', 'm/f']},
+  {k: 'data_nasc', l: 'Data de nascimento', alias: ['data de nascimento', 'data nascimento', 'nascimento', 'data nasc', 'data de nasc']},
+  {k: 'unidade', l: 'Unidade', alias: ['unidade']},
+  {k: 'classe', l: 'Classe', alias: ['classe', 'classe progressiva', 'classe regular']},
+  {k: 'cargo', l: 'Cargo', alias: ['cargo', 'funcao']},
+  {k: 'baptizado', l: 'Baptizado', alias: ['baptizado', 'batizado', 'baptizado(a)', 'batizado(a)']},
+  {k: 'contacto', l: 'Contacto', alias: ['contacto', 'telefone', 'telemovel', 'contato']},
+  {k: 'encarregado_nome', l: 'Encarregado de educação', alias: ['encarregado de educacao', 'encarregado', 'nome do encarregado', 'responsavel', 'pai/mae']},
+  {k: 'encarregado_contacto', l: 'Contacto do encarregado', alias: ['contacto do encarregado', 'telefone do encarregado', 'contacto encarregado', 'contato do encarregado', 'contacto do responsavel']},
+  {k: 'autorizacao_pais', l: 'Autorização dos pais', alias: ['autorizacao dos pais', 'autorizacao', 'autorizacao parental']},
+  {k: 'data_entrada', l: 'Data de entrada', alias: ['data de entrada', 'entrada', 'data de admissao']},
+  {k: 'obs', l: 'Observações', alias: ['observacoes', 'obs', 'observacao']}];
+
+const COLS_REQ = [
+  {k: 'classe', l: 'Classe', alias: ['classe'], obrig: 1}, {k: 'seccao', l: 'Secção', alias: ['seccao', 'secao', 'area']},
+  {k: 'pilar', l: 'Pilar', alias: ['pilar']}, {k: 'avancado', l: 'Avançado', alias: ['avancado', 'avancada']},
+  {k: 'ordem', l: 'Ordem', alias: ['ordem', 'n', 'no', 'n.o', 'numero']}, {k: 'codigo', l: 'Código', alias: ['codigo', 'cod', 'ref']},
+  {k: 'descricao', l: 'Descrição', alias: ['descricao', 'requisito', 'texto'], obrig: 1}];
+
+function importar(cfg) {
+  const div = document.createElement('div'); div.className = 'modal';
+  div.innerHTML = `<div class="caixa larga"><h3>${esc(cfg.titulo)}</h3>
+    <p class="muted">Aceita Excel (.xlsx, .xls) ou CSV. A primeira folha deve ter uma linha de cabeçalhos; os nomes das colunas não precisam de ser exactos. ${esc(cfg.nota || '')}</p>
+    <div class="barra"><button class="btn sec" data-a="mod">Descarregar modelo</button><input type="file" accept=".xlsx,.xls,.csv" data-a="f"><span style="flex:1"></span>
+    <button class="btn sec" data-a="x">Fechar</button><button class="btn" data-a="ok" disabled>Importar</button></div><div data-a="prev"></div></div>`;
+  document.body.appendChild(div);
+  let linhas = [];
+  $('[data-a=x]', div).onclick = () => div.remove();
+  $('[data-a=mod]', div).onclick = async () => {
+    try { const X = await xlsx(); const wb = X.utils.book_new(); X.utils.book_append_sheet(wb, X.utils.aoa_to_sheet(cfg.modelo.linhas), 'Dados'); X.writeFile(wb, cfg.modelo.nome); }
+    catch (e) { toast(e.message, 1); }
+  };
+  $('[data-a=f]', div).onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    const prev = $('[data-a=prev]', div); prev.innerHTML = '<p class="aviso">A ler o ficheiro…</p>';
+    try {
+      const X = await xlsx();
+      const wb = X.read(await f.arrayBuffer(), {type: 'array'});
+      const rows = X.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header: 1, raw: true, defval: ''});
+      const mapa = cab => { const m = {}; cab.forEach((h, i) => { const n = normCab(h); const c = cfg.colunas.find(c => c.alias.includes(n)); if (c && m[c.k] === undefined) m[c.k] = i; }); return m; };
+      let hi = -1, best = 0;
+      rows.slice(0, 15).forEach((r, i) => { const n = Object.keys(mapa(r)).length; if (n > best) { best = n; hi = i; } });
+      if (hi < 0) throw new Error('Não encontrei uma linha de cabeçalhos reconhecível. Use o modelo.');
+      const m = mapa(rows[hi]);
+      const falta = cfg.colunas.filter(c => c.obrig && m[c.k] === undefined).map(c => c.l);
+      if (falta.length) throw new Error('Faltam colunas obrigatórias: ' + falta.join(', '));
+      const ignoradas = rows[hi].filter((h, i) => String(h).trim() && !Object.values(m).includes(i));
+      linhas = rows.slice(hi + 1).map((r, i) => { const o = {_linha: hi + i + 2}; Object.keys(m).forEach(k => { const v = r[m[k]]; o[k] = v instanceof Date ? v.toISOString().slice(0, 10) : String(v ?? '').trim(); }); return o; })
+        .filter(o => cfg.colunas.some(c => o[c.k]));
+      const cols = cfg.colunas.filter(c => m[c.k] !== undefined);
+      prev.innerHTML = `<p><b>${linhas.length}</b> linha(s) prontas a importar. Colunas reconhecidas: ${cols.map(c => esc(c.l)).join(', ')}.
+        ${ignoradas.length ? `<br><span class="muted">Colunas ignoradas: ${ignoradas.map(esc).join(', ')}</span>` : ''}</p>
+        <div class="tw" style="max-height:40vh">${tabela([{k: '_linha', l: 'Linha'}].concat(cols.map(c => ({k: c.k, l: c.l}))), linhas.slice(0, 15))}</div>
+        ${linhas.length > 15 ? `<p class="muted">A mostrar as primeiras 15 linhas.</p>` : ''}`;
+      $('[data-a=ok]', div).disabled = !linhas.length;
+    } catch (er) { prev.innerHTML = `<p class="aviso" style="color:var(--verm)">${esc(er.message)}</p>`; $('[data-a=ok]', div).disabled = true; }
+  };
+  $('[data-a=ok]', div).onclick = async e => {
+    e.target.disabled = true;
+    const prev = $('[data-a=prev]', div), tot = {importados: 0, classes: 0, unidades: 0, ignorados: []};
+    try {
+      for (let i = 0; i < linhas.length; i += 400) {
+        prev.innerHTML = `<p class="aviso">A importar… ${i} de ${linhas.length}</p>`;
+        const r = await cfg.enviar(linhas.slice(i, i + 400));
+        ['importados', 'classes', 'unidades'].forEach(k => tot[k] += r[k] || 0); tot.ignorados = tot.ignorados.concat(r.ignorados || []);
+      }
+      const cI = [{k: 'linha', l: 'Linha'}, {k: 'nome', l: 'Nome'}, {k: 'motivo', l: 'Motivo'}];
+      prev.innerHTML = `<p><b>Importação concluída:</b> ${tot.importados} registo(s) importado(s)${tot.classes ? `, ${tot.classes} inscrição(ões) em classes` : ''}${tot.unidades ? `, ${tot.unidades} unidade(s) nova(s)` : ''}.</p>
+        ${tot.ignorados.length ? `<div class="barra"><b style="flex:1">${tot.ignorados.length} linha(s) com aviso</b><button class="btn sec peq" data-a="csv">CSV</button></div><div class="tw" style="max-height:40vh">${tabela(cI, tot.ignorados)}</div>` : ''}`;
+      if ($('[data-a=csv]', div)) $('[data-a=csv]', div).onclick = () => csv('Linhas ignoradas', cI, tot.ignorados);
+      toast('Importação concluída.');
+      if (cfg.depois) await cfg.depois();
+    } catch (er) { toast(er.message, 1); prev.innerHTML = `<p class="aviso">${esc(er.message)}</p>`; e.target.disabled = false; }
+  };
+}
+
+/* ===== Presenças ===== */
+const hojeISO = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const mesPadrao = () => S.ano === new Date().getFullYear() ? new Date().getMonth() + 1 : 12;
+const fimDoMes = (a, m) => a + '-' + String(m).padStart(2, '0') + '-' + String(new Date(a, m, 0).getDate()).padStart(2, '0');
+const tagPct = v => v === null || v === undefined ? '<span class="muted">—</span>' : `<span class="tag ${v >= 75 ? 'ok' : v >= 50 ? 'med' : 'nao'}">${v.toLocaleString('pt-PT')}%</span>`;
+
+VISTAS.presencas = async m => {
+  if (precisaClube(m)) return;
+  await dadosClube(['Membros', 'Unidades', 'Actividades']);
+  if (!S.mesP || S.mesPAno !== S.ano) { S.mesP = mesPadrao(); S.mesPAno = S.ano; }
+  const mes = S.mesP, de = S.ano + '-' + String(mes).padStart(2, '0') + '-01', ate = fimDoMes(S.ano, mes);
+  const activos = S.dados.Membros.filter(x => x.activo !== 'Não');
+  const acts = S.dados.Actividades.filter(a => a.data >= de && a.data <= ate).sort((a, b) => b.data.localeCompare(a.data));
+  const eleg = a => activos.filter(x => !x.data_entrada || x.data_entrada <= a.data).length;
+  const nP = a => a.presentes ? a.presentes.split(',').length : 0;
+  m.innerHTML = `<div class="card"><div class="barra"><h3>Actividades e chamada — ${esc(nomeClube(S.clube_id))}</h3>
+    <select id="pMes">${MESES.map((n, i) => `<option value="${i + 1}" ${i + 1 === mes ? 'selected' : ''}>${n} ${S.ano}</option>`).join('')}</select>
+    <button class="btn" id="pNova">+ Nova actividade</button></div>
+    <p class="muted" style="margin-top:0">Registe cada reunião ou actividade com o seu pilar (cada actividade conta para um só pilar). Estes registos alimentam o relatório mensal: pilares, actividades missionárias e classe bíblica.</p>
+    <div class="tw">${acts.length ? tabela([{k: 'data', l: 'Data'}, {k: 'tipo', l: 'Tipo'}, {k: 'pilar', l: 'Pilar'}, {k: 'tema', l: 'Tema'},
+      {l: 'Presentes', n: 1, f: a => nP(a) + ' / ' + eleg(a)}, {l: 'Presença', n: 1, html: 1, f: a => tagPct(eleg(a) ? Math.round(nP(a) * 1000 / eleg(a)) / 10 : null)}], acts, true)
+      : '<p class="aviso">Ainda não há actividades neste mês.</p>'}</div></div>
+    <div class="card"><div class="barra"><h3>Assiduidade</h3><select id="pPer"><option value="mes">${MESES[mes - 1]}</option><option value="tri">Trimestre</option><option value="ano">Ano ${S.ano}</option></select>
+    <button class="btn sec" id="pCsv">CSV</button></div><p class="muted" style="margin-top:0">Presenças ÷ chamadas desde a entrada do membro. As faltas justificadas não contam.</p><div id="pAss"></div></div>`;
+  $('#pMes').onchange = e => { S.mesP = +e.target.value; VISTAS.presencas(m); };
+  const recarregar = async () => { await dadosClube(['Actividades'], true); VISTAS.presencas(m); };
+  $('#pNova').onclick = () => chamada(null, recarregar);
+  $$('tbody tr.clic', m).forEach(tr => tr.onclick = () => chamada(acts[+tr.dataset.i], recarregar));
+  let assLinhas = [];
+  const cA = [{k: 'nome', l: 'Nome'}, {k: 'tipo', l: 'Tipo'}, {k: 'unidade', l: 'Unidade'}, {k: 'p', l: 'Presenças', n: 1}, {k: 'j', l: 'Justificadas', n: 1}, {k: 't', l: 'Chamadas', n: 1}, {l: 'Assiduidade', n: 1, html: 1, k: 'pct', f: r => tagPct(r.pct)}];
+  const carregarAss = async () => {
+    const per = $('#pPer').value, t = Math.ceil(mes / 3);
+    const p = per === 'mes' ? {de, ate} : per === 'tri' ? {de: S.ano + '-' + String(3 * t - 2).padStart(2, '0') + '-01', ate: fimDoMes(S.ano, 3 * t)} : {de: S.ano + '-01-01', ate: S.ano + '-12-31'};
+    $('#pAss').innerHTML = '<p class="aviso">A calcular…</p>';
+    try {
+      const r = await call('assiduidade', Object.assign({clube_id: S.clube_id}, p)); assLinhas = r.linhas;
+      $('#pAss').innerHTML = `<p>Assiduidade do clube: ${tagPct(r.total)}</p>
+        <div class="tw" style="max-height:30vh">${tabela([{k: 'unidade', l: 'Unidade'}, {k: 'membros', l: 'Membros', n: 1}, {k: 'p', l: 'Presenças', n: 1}, {k: 't', l: 'Chamadas', n: 1}, {l: 'Assiduidade', n: 1, html: 1, f: x => tagPct(x.pct)}], r.unidades)}</div>
+        <h3 style="margin-top:14px">Por membro (do menor para o maior)</h3><div class="tw">${tabela(cA, r.linhas)}</div>`;
+    } catch (e) { $('#pAss').innerHTML = `<p class="aviso">${esc(e.message)}</p>`; }
+  };
+  $('#pPer').onchange = carregarAss; carregarAss();
+  $('#pCsv').onclick = () => csv('Assiduidade', cA.map(c => c.k === 'pct' ? {k: 'pct', l: 'Assiduidade (%)'} : c), assLinhas);
+};
+
+function chamada(act, recarregar) {
+  const novo = !act;
+  const hj = hojeISO();
+  act = act || {data: String(S.ano) === hj.slice(0, 4) ? hj : S.ano + '-' + String(S.mesP).padStart(2, '0') + '-01', tipo: 'Reunião regular', pilar: 'Espiritual', tema: '', obs: '', presentes: '', justificados: ''};
+  const est = {};
+  const pres = new Set((act.presentes || '').split(',').filter(Boolean)), just = new Set((act.justificados || '').split(',').filter(Boolean));
+  const ms = S.dados.Membros.filter(x => x.activo !== 'Não' || pres.has(x.id) || just.has(x.id))
+    .sort((a, b) => nomeUnidade(a.unidade_id).localeCompare(nomeUnidade(b.unidade_id)) || porNome(a, b));
+  ms.forEach(x => est[x.id] = pres.has(x.id) ? 'P' : just.has(x.id) ? 'J' : 'F');
+  const div = document.createElement('div'); div.className = 'modal';
+  div.innerHTML = `<div class="caixa larga"><h3>${novo ? 'Nova actividade' : 'Actividade de ' + esc(act.data)}</h3>
+    <form class="form">${campoHtml({k: 'data', l: 'Data', t: 'date', req: 1}, act.data)}${campoHtml({k: 'tipo', l: 'Tipo', opt: TIPOS_ACT}, act.tipo)}
+    ${campoHtml({k: 'pilar', l: 'Pilar', opt: PILARES}, act.pilar)}${campoHtml({k: 'tema', l: 'Tema / descrição'}, act.tema)}</form>
+    <div class="barra" style="margin-top:12px"><b style="flex:1" data-a="cnt"></b><button class="btn sec peq" data-a="todos">Todos presentes</button><button class="btn sec peq" data-a="ninguem">Limpar</button></div>
+    <div class="tw" style="max-height:45vh"><table><thead><tr><th>Nome</th><th>Unidade</th><th>Tipo</th><th>Presença</th></tr></thead><tbody>${ms.map(x =>
+      `<tr data-id="${x.id}"><td>${esc(x.nome)}</td><td>${esc(nomeUnidade(x.unidade_id))}</td><td>${x.tipo}</td><td><span class="pfj">${['P', 'F', 'J'].map(k =>
+        `<button type="button" data-k="${k}" class="${k}" title="${{P: 'Presente', F: 'Falta', J: 'Falta justificada'}[k]}">${k}</button>`).join('')}</span></td></tr>`).join('')}</tbody></table></div>
+    <div class="barra" style="justify-content:flex-end;margin-top:12px">${novo ? '' : '<button class="btn del" data-a="del">Apagar</button><span style="flex:1"></span>'}
+    <button class="btn sec" data-a="x">Cancelar</button><button class="btn" data-a="ok">Guardar</button></div></div>`;
+  document.body.appendChild(div);
+  const pintar = () => {
+    $$('tr[data-id]', div).forEach(tr => $$('.pfj button', tr).forEach(b => b.classList.toggle('on', est[tr.dataset.id] === b.dataset.k)));
+    const v = Object.values(est); $('[data-a=cnt]', div).textContent = `${v.filter(x => x === 'P').length} presentes · ${v.filter(x => x === 'F').length} faltas · ${v.filter(x => x === 'J').length} justificadas`;
+  };
+  $$('.pfj button', div).forEach(b => b.onclick = () => { est[b.closest('tr').dataset.id] = b.dataset.k; pintar(); });
+  $('[data-a=todos]', div).onclick = () => { ms.forEach(x => est[x.id] = 'P'); pintar(); };
+  $('[data-a=ninguem]', div).onclick = () => { ms.forEach(x => est[x.id] = 'F'); pintar(); };
+  pintar();
+  $('[data-a=x]', div).onclick = () => div.remove();
+  const bloq = b => $$('.barra button', div).forEach(x => x.disabled = b);
+  if (!novo) $('[data-a=del]', div).onclick = async () => {
+    if (!confirm('Apagar esta actividade e a sua chamada?')) return;
+    bloq(true); try { await call('apagar', {tabela: 'Actividades', id: act.id}); div.remove(); toast('Apagada.'); await recarregar(); } catch (e) { toast(e.message, 1); bloq(false); }
+  };
+  $('[data-a=ok]', div).onclick = async () => {
+    const f = $('form', div).elements;
+    const reg = {id: act.id, clube_id: S.clube_id, data: f.data.value, tipo: f.tipo.value, pilar: f.pilar.value, tema: f.tema.value};
+    if (!reg.data) return toast('Indique a data.', 1);
+    bloq(true);
+    try {
+      await call('guardarActividade', {registo: reg, presentes: Object.keys(est).filter(k => est[k] === 'P'), justificados: Object.keys(est).filter(k => est[k] === 'J')});
+      div.remove(); toast('Chamada guardada.'); S.mesP = +reg.data.slice(5, 7); await recarregar();
+    } catch (e) { toast(e.message, 1); bloq(false); }
+  };
+}
+
+/* ===== Relatório mensal ===== */
+const LEG_EST = {P: ['✔', 'Enviado no prazo'], A: ['⏰', 'Enviado fora do prazo'], F: ['✖', 'Em falta'], R: ['R', 'Rascunho (ainda no prazo)'], E: ['…', 'Em curso (ainda no prazo)']};
+
+VISTAS.relatorio = async m => {
+  if (!S.clube_id) {
+    const d = await call('estadoRelatorios', {ano: S.ano, regiao_id: S.regiao_id});
+    const cont = k => d.reduce((s, c) => s + c.meses.filter(x => x === k).length, 0);
+    m.innerHTML = `<div class="card"><div class="barra"><h3>Entrega dos relatórios mensais ${S.ano}</h3><button class="btn sec" id="rCsv">CSV</button></div>
+      <p class="muted" style="margin-top:0">Prazo: dia 5 do mês seguinte. Escolha um clube no topo para ver ou preencher o relatório. ${Object.keys(LEG_EST).map(k => `<b>${LEG_EST[k][0]}</b> ${LEG_EST[k][1]}`).join(' · ')}</p>
+      <div class="kpis">${['P', 'A', 'F'].map(k => `<div class="kpi"><div class="v">${num(cont(k))}</div><div class="l">${LEG_EST[k][1]}</div></div>`).join('')}</div>
+      <div class="tw"><table class="mx"><thead><tr><th>Clube</th>${MESES.map(x => `<th>${x.slice(0, 3)}</th>`).join('')}</tr></thead><tbody>${d.map(c =>
+        `<tr><td>${esc(c.clube)} <small class="muted">${esc(c.regiao)}</small></td>${c.meses.map(x => `<td class="${x}">${x ? LEG_EST[x][0] : ''}</td>`).join('')}</tr>`).join('')}</tbody></table></div></div>`;
+    $('#rCsv').onclick = () => csv('Entrega relatorios ' + S.ano, [{k: 'regiao', l: 'Região'}, {k: 'clube', l: 'Clube'}, {k: 'igreja', l: 'Igreja'}]
+      .concat(MESES.map((x, i) => ({l: x, f: c => c.meses[i] ? LEG_EST[c.meses[i]][1] : ''}))), d);
+    return;
+  }
+  if (!S.mesR || S.mesRAno !== S.ano) { const cur = S.ano === new Date().getFullYear(); S.mesR = cur ? Math.max(1, new Date().getMonth()) : 12; S.mesRAno = S.ano; }
+  const mes = S.mesR;
+  const d = await call('relatorioMensal', {clube_id: S.clube_id, ano: S.ano, mes});
+  const r = d.registo || {}, enviado = r.estado === 'Enviado', bloq = enviado && S.u.papel === 'DIRECTOR';
+  const c = enviado ? r : d.calculado;
+  const n = v => Number(v || 0);
+  const kpi = (v, l) => `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`;
+  const sn = v => `<span class="tag ${v === 'Sim' ? 'ok' : 'nao'}">${v}</span>`;
+  const estado = enviado ? `<span class="tag ok">Enviado em ${esc(r.enviado_em)}</span> ${r.enviado_em.slice(0, 10) <= d.prazo ? '<span class="tag ok">no prazo</span>' : '<span class="tag med">fora do prazo</span>'}`
+    : r.id ? '<span class="tag">Rascunho</span>' : '<span class="tag">Não iniciado</span>';
+  m.innerHTML = `<div class="card"><div class="barra"><h3>Relatório mensal — ${esc(d.clube)}</h3>
+    <select id="rMes">${MESES.map((x, i) => `<option value="${i + 1}" ${i + 1 === mes ? 'selected' : ''}>${x} ${S.ano}</option>`).join('')}</select></div>
+    <p style="margin-top:0">${estado} <span class="muted">Prazo: ${esc(d.prazo)}</span></p>
+    <p class="muted">${enviado ? 'Valores registados no momento do envio.' : 'Valores calculados agora a partir das abas Membros, Classes e Presenças. Para os corrigir, actualize essas abas antes de enviar.'}</p>
+    <div class="kpis">${kpi(num(c.activos), 'Desbravadores activos')}${kpi(num(c.inscritos), 'Inscritos nas classes')}${kpi(pct(n(c.inscritos), n(c.activos)), 'Taxa de inscrição (meta 75%)')}
+    ${kpi(num(c.investidos), 'Investidos')}${kpi(num(c.actividades), 'Actividades no mês')}${kpi(c.assiduidade === null || c.assiduidade === '' ? '—' : String(c.assiduidade).replace('.', ',') + '%', 'Assiduidade')}
+    ${kpi(num(c.missionarias), 'Actividades missionárias')}${kpi(num(c.encontros_cb), 'Encontros da classe bíblica')}</div>
+    <p>Pilares: Espiritual ${sn(c.pilar_espiritual)} Físico ${sn(c.pilar_fisico)} Mental ${sn(c.pilar_mental)} Social ${sn(c.pilar_social)} · Classe bíblica activa (≥2 encontros) ${sn(c.classe_biblica_activa)}</p></div>
+    <div class="card"><h3>A preencher pelo clube</h3><form class="form">
+    ${campoHtml({k: 'baptismos', l: 'Baptismos por influência do clube neste mês', t: 'number', ro: bloq}, r.baptismos || '0')}
+    ${d.perguntaCalendario ? campoHtml({k: 'calendario_trimestral', l: 'Calendário do trimestre entregue à coordenação regional?', opt: [['', '—'], 'Sim', 'Não'], ro: bloq}, r.calendario_trimestral) : ''}
+    ${campoHtml({k: 'visita', l: 'Recebeu visita presencial da coordenação este mês?', opt: NS, ro: bloq}, r.visita || 'Não')}
+    ${campoHtml({k: 'data_visita', l: 'Data da visita', t: 'date', ro: bloq}, r.data_visita)}${campoHtml({k: 'visitante', l: 'Quem visitou', ro: bloq}, r.visitante)}
+    ${campoHtml({k: 'destaques', l: 'Destaques do mês', t: 'area', full: 1, ro: bloq}, r.destaques)}${campoHtml({k: 'dificuldades', l: 'Dificuldades e necessidades de apoio', t: 'area', full: 1, ro: bloq}, r.dificuldades)}
+    </form><div class="barra" style="justify-content:flex-end;margin-top:12px">
+    ${r.id ? '<button class="btn sec" id="rPdf">PDF</button>' : ''}${enviado && S.u.papel !== 'DIRECTOR' ? '<button class="btn sec" id="rReab">Reabrir</button>' : ''}
+    ${bloq ? '<span class="muted">Relatório enviado. Para corrigir, peça ao regional para o reabrir.</span>' : '<button class="btn sec" id="rRasc">Guardar rascunho</button><button class="btn" id="rEnv">' + (enviado ? 'Actualizar envio' : 'Enviar relatório') + '</button>'}</div></div>`;
+  $('#rMes').onchange = e => { S.mesR = +e.target.value; VISTAS.relatorio(m); };
+  const dados = () => { const f = $('form', m).elements, o = {}; ['baptismos', 'calendario_trimestral', 'visita', 'data_visita', 'visitante', 'destaques', 'dificuldades'].forEach(k => { if (f[k]) o[k] = f[k].value; }); return o; };
+  const gravar = async (enviar, b) => {
+    if (enviar && !confirm('Enviar o relatório de ' + MESES[mes - 1] + '? Depois de enviado, só o regional o pode reabrir.')) return;
+    b.disabled = true;
+    try { await call('guardarRelatorio', {clube_id: S.clube_id, ano: S.ano, mes, dados: dados(), enviar}); toast(enviar ? 'Relatório enviado.' : 'Rascunho guardado.'); VISTAS.relatorio(m); }
+    catch (e) { toast(e.message, 1); b.disabled = false; }
+  };
+  if ($('#rRasc')) $('#rRasc').onclick = e => gravar(false, e.target);
+  if ($('#rEnv')) $('#rEnv').onclick = e => gravar(true, e.target);
+  if ($('#rPdf')) $('#rPdf').onclick = e => baixarPdf({tipo: 'mensal', clube_id: S.clube_id, ano: S.ano, mes}, e.target);
+  if ($('#rReab')) $('#rReab').onclick = async e => { e.target.disabled = true; try { await call('reabrirRelatorio', {id: r.id}); toast('Relatório reaberto.'); VISTAS.relatorio(m); } catch (er) { toast(er.message, 1); e.target.disabled = false; } };
+};
+
+/* ===== Relatórios T1–T4 ===== */
+VISTAS.trimestral = async m => {
+  if (!S.tri) S.tri = Math.ceil((S.ano === new Date().getFullYear() ? new Date().getMonth() + 1 : 12) / 3);
+  const d = await call('relatorioTrimestral', {ano: S.ano, t: S.tri, regiao_id: S.regiao_id, clube_id: S.clube_id});
+  const k = d.kpis, f = v => v === null || v === undefined ? '—' : v.toLocaleString('pt-PT') + '%';
+  const kpi = (v, l, meta) => `<div class="kpi"><div class="v">${v}</div><div class="l">${l}${meta ? ' · meta ' + meta : ''}</div></div>`;
+  const cR = [{k: 'regiao', l: 'Região'}, {k: 'clubes', l: 'Clubes', n: 1}, {l: 'Entrega', n: 1, f: r => f(r.entrega)}, {l: 'No prazo', n: 1, f: r => f(r.pontualidade)},
+    {l: 'Taxa de inscrição', n: 1, f: r => f(r.taxa_inscricao)}, {l: 'Meses 4 pilares', n: 1, f: r => f(r.pilares)}, {l: 'Missionária mensal', n: 1, f: r => f(r.missionaria_mensal)},
+    {k: 'baptismos', l: 'Baptismos', n: 1}, {k: 'visitas', l: 'Visitas', n: 1}];
+  const cC = [{k: 'regiao', l: 'Região'}, {k: 'clube', l: 'Clube'}, {l: 'Entregues', n: 1, f: r => r.entregues + '/3'}, {l: 'No prazo', n: 1, f: r => r.pontuais + '/3'},
+    {k: 'activos', l: 'Activos', n: 1}, {k: 'inscritos', l: 'Inscritos', n: 1}, {k: 'actividades', l: 'Actividades', n: 1}, {l: 'Meses 4 pilares', n: 1, f: r => r.meses_4_pilares + '/' + r.entregues},
+    {k: 'missionarias', l: 'Missionárias', n: 1}, {l: 'Classe bíblica activa', n: 1, f: r => r.meses_cb_activa + '/' + r.entregues}, {k: 'baptismos', l: 'Baptismos', n: 1},
+    {k: 'visitas', l: 'Visitas', n: 1}, {l: 'Assiduidade', n: 1, f: r => r.assiduidade === null ? '—' : r.assiduidade.toLocaleString('pt-PT') + '%'}];
+  m.innerHTML = `<div class="card"><div class="barra"><h3>Relatório trimestral ${d.ano}</h3>
+    <select id="tSel">${[1, 2, 3, 4].map(t => `<option value="${t}" ${t === S.tri ? 'selected' : ''}>T${t} (${MESES[3 * t - 3].slice(0, 3)}–${MESES[3 * t - 1].slice(0, 3)})</option>`).join('')}</select>
+    <button class="btn sec" id="tPdf">PDF</button></div>
+    <p class="muted" style="margin-top:0">Consolida os relatórios mensais <b>enviados</b>, com os mesmos indicadores do formulário Kobo e da matriz de M&amp;A.</p>
+    <div class="kpis">${kpi(f(k.entrega), 'Relatórios entregues', '100%')}${kpi(f(k.pontualidade), 'Entregues até ao dia 5', '100%')}${kpi(f(k.taxa_inscricao), 'Taxa de inscrição', '75%')}
+    ${kpi(f(k.pilares), 'Meses com os 4 pilares', '100%')}${kpi(f(k.missionaria_mensal), 'Meses com actividade missionária', '100%')}${kpi(f(k.classe_biblica), 'Meses com classe bíblica activa', '100%')}
+    ${kpi(num(k.missionarias), 'Actividades missionárias')}${kpi(num(k.baptismos), 'Baptismos')}${kpi(num(k.visitas), 'Visitas da coordenação')}</div></div>
+    ${d.regioes.length > 1 ? `<div class="card"><div class="barra"><h3>Por região</h3><button class="btn sec" id="tCsvR">CSV</button></div><div class="tw">${tabela(cR, d.regioes)}</div></div>` : ''}
+    <div class="card"><div class="barra"><h3>Por clube (${d.linhas.length})</h3><button class="btn sec" id="tCsvC">CSV</button></div><div class="tw">${tabela(cC, d.linhas)}</div></div>`;
+  $('#tSel').onchange = e => { S.tri = +e.target.value; VISTAS.trimestral(m); };
+  $('#tPdf').onclick = e => baixarPdf({tipo: 'trimestral', ano: S.ano, t: S.tri, regiao_id: S.regiao_id, clube_id: S.clube_id}, e.target);
+  if ($('#tCsvR')) $('#tCsvR').onclick = () => csv(`T${S.tri} ${S.ano} por regiao`, cR, d.regioes);
+  $('#tCsvC').onclick = () => csv(`T${S.tri} ${S.ano} por clube`, cC, d.linhas);
+};
+
+/* ===== Arranque ===== */
+window.__sgcOk = true;
+if (S.token) iniciar(); else vistaLogin();
+</script>
+</body>
+</html>
