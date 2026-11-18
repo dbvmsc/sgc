@@ -28,6 +28,18 @@ nav button.on{color:var(--azul);font-weight:600}
 nav button.on .ic{background:#dde8f5}
 nav button.on svg{stroke-width:2.3}
 @media(min-width:1100px){nav{justify-content:center}}
+.sino{position:relative;background:none;border:0;color:#fff;cursor:pointer;padding:4px 6px}
+.sino svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.sino .b{position:absolute;top:-3px;right:-3px;background:#e53e3e;color:#fff;border-radius:9px;font-size:10px;font-weight:700;padding:1px 5px;min-width:16px}
+.notifP{position:fixed;top:58px;right:10px;width:min(390px,94vw);max-height:72vh;overflow:auto;background:#fff;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.25);z-index:25}
+.notifP .it{padding:10px 12px;border-bottom:1px solid var(--borda);cursor:pointer}.notifP .it:hover{background:#f7fafc}.notifP .it.nova{background:#ebf4ff}
+.notifP .it b{display:block;font-size:13px;color:var(--azul)}.notifP .it small{color:var(--suave)}
+.com{cursor:pointer}.com.novo{border-left:4px solid var(--azul)}.com.urg{border-left:4px solid var(--verm)}.com .txt{white-space:normal;margin-top:8px;line-height:1.5}
+.tl{border-left:2px solid var(--borda);margin:8px 0 8px 6px;padding-left:12px}.tl div{margin-bottom:8px;position:relative}
+.tl div:before{content:'';position:absolute;left:-18px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--ouro)}
+.tag.azul{background:#bee3f8;color:#2a4365}.tag.cinza{background:#edf2f7;color:#4a5568}
+.anul td{color:#a0aec0;text-decoration:line-through}
+.pend{border:1px solid #f6ad55;background:#fffaf0}
 .podio{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
 .podio div{background:#fff;border:1px solid var(--borda);border-radius:8px;padding:10px;text-align:center}
 .podio .md{width:40px;height:40px;border-radius:50%;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 6px}.podio b{display:block;color:var(--azul)}
@@ -288,7 +300,7 @@ function vistaLogin() {
 
 function sair(silencioso) {
   if (!silencioso && S.token) rpc('api', [S.token, 'sair', {}]).catch(() => {});
-  sessionStorage.removeItem('sgc_t');
+  sessionStorage.removeItem('sgc_t'); clearInterval(S.timerSino); $$('.notifP').forEach(x => x.remove());
   Object.assign(S, {token: null, u: null, clube_id: '', regiao_id: '', dados: {}, tab: 'painel'});
   vistaLogin();
 }
@@ -309,9 +321,9 @@ async function iniciar() {
   }
 }
 
-const ABAS = [['painel','Painel'],['membros','Membros'],['presencas','Presenças'],['classes','Classes'],['especialidades','Especialid.'],
-  ['merito','Mérito'],['financeiro','Seguro'],['eventos','Eventos'],['relatorio','Relatório'],['trimestral','T1–T4'],
-  ['clube','Clube'],['qualidade','Qualidade'],['admin','Admin']];
+const ABAS = [['painel','Painel'],['comunicados','Comunicados'],['membros','Membros'],['presencas','Presenças'],['classes','Classes'],['especialidades','Especialid.'],
+  ['merito','Mérito'],['financas','Finanças'],['financeiro','Seguro'],['eventos','Eventos'],['relatorio','Relatório'],['trimestral','T1–T4'],
+  ['solicitacoes','Solicitações'],['transferencias','Transferências'],['clube','Clube'],['qualidade','Qualidade'],['admin','Admin']];
 const ICONES = {
   painel: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
   membros: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.8 0 4.5 1.9 4.5 4.5"/>',
@@ -325,6 +337,10 @@ const ICONES = {
   trimestral: '<path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/>',
   clube: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
   qualidade: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
+  comunicados: '<path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/>',
+  financas: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 15h2M6 6V5a2 2 0 0 1 2-2h9"/>',
+  solicitacoes: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11h6M9 15h4"/>',
+  transferencias: '<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
   admin: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/>'};
 
 function moldura() {
@@ -335,7 +351,8 @@ function moldura() {
     ${u.papel === 'MSC' ? `<select id="sReg"><option value="">Todas as regiões</option>${S.regioes.slice().sort(porNome).map(r => `<option value="${r.id}" ${r.id === S.regiao_id ? 'selected' : ''}>${esc(r.nome)}</option>`).join('')}</select>` : ''}
     ${u.papel === 'REGIONAL' ? `<span>${esc(nomeRegiao(u.regiao_id))}</span>` : ''}
     ${u.papel !== 'DIRECTOR' ? '<select id="sClube"></select>' : `<span>${esc(nomeClube(S.clube_id))}</span>`}
-    <span class="esp"></span><span class="quem">${esc(u.nome)} · ${PAPEL_TXT[u.papel]}</span>
+    <span class="esp"></span><button class="sino" id="bSino" title="Notificações"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="b" id="sinoN" style="display:none"></span></button>
+    <span class="quem">${esc(u.nome)} · ${PAPEL_TXT[u.papel]}</span>
     <button class="btn sec peq" id="bSenha">Palavra-passe</button><button class="btn sec peq" id="bSair">Sair</button></header>
     <nav>${ABAS.filter(x => x[0] !== 'admin' || u.papel !== 'DIRECTOR').map(x => `<button data-t="${x[0]}" title="${x[1]}"><span class="ic"><svg viewBox="0 0 24 24">${ICONES[x[0]]}</svg></span>${x[1]}</button>`).join('')}</nav>
     <main id="main"></main>`;
@@ -345,6 +362,9 @@ function moldura() {
   $$('nav button').forEach(b => b.onclick = () => mostrar(b.dataset.t));
   $('#bSair').onclick = () => sair();
   $('#bSenha').onclick = mudarSenha;
+  $('#bSino').onclick = abrirNotificacoes;
+  actualizarSino();
+  clearInterval(S.timerSino); S.timerSino = setInterval(() => { if (S.token && !document.hidden) actualizarSino(); }, 90000);
 }
 
 function preencherClubes() {
@@ -756,6 +776,218 @@ VISTAS.admin = async m => {
       })
     });
   }
+};
+
+/* ===== Notificações (sino) ===== */
+const quando = d => { const ms = Date.now() - Date.parse(String(d).slice(0, 19).replace(' ', 'T')); const m = Math.round(ms / 60000);
+  return m < 1 ? 'agora' : m < 60 ? 'há ' + m + ' min' : m < 1440 ? 'há ' + Math.round(m / 60) + ' h' : String(d).slice(0, 10); };
+async function actualizarSino() {
+  try { const r = await call('notificacoes', {contar: true}); const b = $('#sinoN'); if (!b) return;
+    b.textContent = r.naoLidas > 99 ? '99+' : r.naoLidas; b.style.display = r.naoLidas ? '' : 'none'; } catch (e) {}
+}
+async function abrirNotificacoes() {
+  if ($('.notifP')) return $('.notifP').remove();
+  const p = document.createElement('div'); p.className = 'notifP'; p.innerHTML = '<p class="aviso">A carregar…</p>'; document.body.appendChild(p);
+  try {
+    const r = await call('notificacoes', {});
+    p.innerHTML = `<div class="barra" style="padding:10px 12px;margin:0;border-bottom:1px solid var(--borda)"><h3 style="margin:0">Notificações</h3><button class="btn sec peq" data-a="x">Fechar</button></div>` +
+      (r.lista.length ? r.lista.map((n, i) => `<div class="it ${n.lida ? '' : 'nova'}" data-i="${i}"><b>${esc(n.titulo)}</b>${esc(n.texto)}<br><small>${quando(n.data)}</small></div>`).join('') : '<p class="aviso">Sem notificações.</p>');
+    $('[data-a=x]', p).onclick = () => p.remove();
+    $$('.it', p).forEach(el => el.onclick = () => {
+      const n = r.lista[+el.dataset.i]; p.remove();
+      if (n.clube_id && S.u.papel !== 'DIRECTOR' && S.clubes.some(c => c.id === n.clube_id)) {
+        const c = S.clubes.find(c => c.id === n.clube_id);
+        if (S.u.papel === 'MSC' && $('#sReg')) { S.regiao_id = ''; $('#sReg').value = ''; }
+        S.clube_id = c.id; S.dados = {}; preencherClubes();
+      }
+      if (n.aba && VISTAS[n.aba]) mostrar(n.aba);
+    });
+    if (r.naoLidas) { await call('marcarLidas'); $('#sinoN').style.display = 'none'; }
+  } catch (e) { p.innerHTML = `<p class="aviso">${esc(e.message)}</p>`; }
+}
+const textoHtml = t => esc(t).replace(/\n/g, '<br>');
+
+/* ===== Comunicados ===== */
+VISTAS.comunicados = async m => {
+  const l = await call('comunicados');
+  const pode = S.u.papel !== 'DIRECTOR';
+  m.innerHTML = `<div class="card"><div class="barra"><h3>Comunicados</h3>${pode ? '<button class="btn" id="cNovo">+ Novo comunicado</button>' : ''}</div>
+    <p class="muted" style="margin:0">${l.filter(c => !c.lido).length} por ler. Toque num comunicado para o abrir.</p></div>
+    ${l.length ? l.map((c, i) => `<div class="card com ${c.lido ? '' : 'novo'} ${c.prioridade === 'Urgente' ? 'urg' : ''}" data-i="${i}">
+      <div class="barra" style="margin:0"><h3 style="margin:0">${c.prioridade === 'Urgente' ? '<span class="tag nao">URGENTE</span> ' : ''}${esc(c.titulo)}</h3>${c.lido ? '' : '<span class="tag azul">Novo</span>'}${c.activo === 'Não' ? '<span class="tag cinza">Arquivado</span>' : ''}</div>
+      <small class="muted">${esc(c.autor_nome)} · ${c.ambito === 'MSC' ? 'Coordenação MSC' + (c.destinatarios !== 'Todos' ? ' → ' + esc(c.destinatarios) : '') : 'Região ' + esc(nomeRegiao(c.regiao_id))} · ${esc(c.data.slice(0, 16))}${c.data_evento ? ' · Data do evento: <b>' + esc(c.data_evento) + '</b>' : ''}</small>
+      <div class="txt" style="display:none">${textoHtml(c.texto)}${c.pode_gerir ? `<div class="barra" style="margin:10px 0 0"><button class="btn sec peq" data-q="${c.id}">Lido por ${c.leituras} de ${c.destinatarios_total}</button><button class="btn sec peq" data-arq="${c.id}">${c.activo === 'Não' ? 'Reactivar' : 'Arquivar'}</button></div>` : ''}</div></div>`).join('')
+      : '<div class="card aviso">Ainda não há comunicados.</div>'}`;
+  $$('.com', m).forEach(el => el.onclick = async e => {
+    if (e.target.closest('button')) return;
+    const c = l[+el.dataset.i], t = $('.txt', el); t.style.display = t.style.display === 'none' ? '' : 'none';
+    if (!c.lido) { c.lido = true; el.classList.remove('novo'); const tg = $('.tag.azul', el); if (tg) tg.remove(); try { await call('lerComunicado', {id: c.id}); } catch (er) {} }
+  });
+  $$('[data-q]', m).forEach(b => b.onclick = async () => {
+    try { const r = await call('quemLeu', {id: b.dataset.q});
+      formModal('Leituras do comunicado', [{k: 'x', l: '', t: 'area', full: 1, ro: 1}], {x: r.map(x => (x.leu_em ? '✔ ' : '— ') + x.nome + ' (' + x.ambito + ')' + (x.leu_em ? ' · ' + x.leu_em.slice(0, 16) : ' · por ler')).join('\n')}, async () => {});
+      $('.modal textarea').rows = 14;
+    } catch (e) { toast(e.message, 1); }
+  });
+  $$('[data-arq]', m).forEach(b => b.onclick = async () => { try { await call('arquivarComunicado', {id: b.dataset.arq}); VISTAS.comunicados(m); } catch (e) { toast(e.message, 1); } });
+  if (pode) $('#cNovo').onclick = () => formModal('Novo comunicado', [
+    {k: 'titulo', l: 'Título', req: 1, full: 1}, {k: 'texto', l: 'Mensagem', t: 'area', req: 1, full: 1},
+    {k: 'prioridade', l: 'Prioridade', opt: ['Normal', 'Urgente']}, {k: 'data_evento', l: 'Data da actividade (opcional)', t: 'date'},
+    S.u.papel === 'MSC' ? {k: 'destinatarios', l: 'Enviar para', opt: [['Todos', 'Todos (regionais e directores)'], ['Regionais', 'Só regionais'], ['Directores', 'Só directores']], full: 1}
+      : {k: 'destinatarios', l: 'Enviar para', opt: [['Todos', 'Regional e directores da minha região']], ro: 1, full: 1}],
+    {prioridade: 'Normal', destinatarios: 'Todos'}, async v => { await call('publicarComunicado', {registo: v}); VISTAS.comunicados(m); });
+};
+
+/* ===== Finanças ===== */
+const kz = v => Number(v || 0).toLocaleString('pt-PT') + ' Kz';
+VISTAS.financas = async m => {
+  if (!S.clube_id) {
+    if (S.u.papel === 'DIRECTOR') return precisaClube(m);
+    const d = await call('resumoFinancas', {ano: S.ano, regiao_id: S.regiao_id});
+    const cols = [{k: 'regiao', l: 'Região'}, {k: 'clube', l: 'Clube'}, {l: 'Receitas ' + d.ano, n: 1, f: r => kz(r.receitas)}, {l: 'Despesas ' + d.ano, n: 1, f: r => kz(r.despesas)},
+      {l: 'Saldo do ano', n: 1, f: r => kz(r.saldo_ano)}, {l: 'Saldo actual', n: 1, html: 1, f: r => `<b style="color:${r.saldo_actual < 0 ? 'var(--verm)' : 'inherit'}">${kz(r.saldo_actual)}</b>`}, {k: 'ultimo_movimento', l: 'Último movimento'}];
+    const t = d.totais;
+    m.innerHTML = `<div class="kpis"><div class="kpi"><div class="v">${kz(t.receitas)}</div><div class="l">Receitas ${d.ano}</div></div><div class="kpi"><div class="v">${kz(t.despesas)}</div><div class="l">Despesas ${d.ano}</div></div>
+      <div class="kpi"><div class="v">${kz(t.saldo_actual)}</div><div class="l">Saldo actual (todos os clubes)</div></div><div class="kpi"><div class="v">${num(t.sem_movimentos)}</div><div class="l">Clubes sem movimentos</div></div></div>
+      <div class="card"><div class="barra"><h3>Finanças por clube (${t.clubes})</h3><span class="muted">Toque num clube para ver os movimentos</span><button class="btn sec" id="fCsv">CSV</button></div><div class="tw">${tabela(cols, d.linhas, true)}</div></div>`;
+    $('#fCsv').onclick = () => csv('Financas ' + d.ano, cols.map(c => c.html ? {l: c.l, f: r => r.saldo_actual} : c), d.linhas);
+    $$('tbody tr', m).forEach(tr => tr.onclick = () => { S.clube_id = d.linhas[+tr.dataset.i].clube_id; S.dados = {}; preencherClubes(); VISTAS.financas(m); });
+    return;
+  }
+  if (!S.perF) S.perF = 'mes';
+  if (!S.mesF || S.mesFAno !== S.ano) { S.mesF = mesPadrao(); S.mesFAno = S.ano; }
+  const de = S.perF === 'ano' ? S.ano + '-01-01' : S.ano + '-' + String(S.mesF).padStart(2, '0') + '-01', ate = S.perF === 'ano' ? S.ano + '-12-31' : fimDoMes(S.ano, S.mesF);
+  await dadosClube(['Membros']);
+  const d = await call('movimentos', {clube_id: S.clube_id, de, ate});
+  const cols = [{k: 'data', l: 'Data'}, {k: 'tipo', l: 'Tipo'}, {k: 'categoria', l: 'Categoria'}, {l: 'Descrição', f: r => r.descricao + (r.membro ? ' (' + r.membro + ')' : '')},
+    {k: 'referencia', l: 'Ref.'}, {l: 'Valor', n: 1, html: 1, k: 'valor', f: r => `<b style="color:${r.tipo === 'Despesa' ? 'var(--verm)' : 'var(--verde)'}">${r.tipo === 'Despesa' ? '−' : '+'}${kz(r.valor)}</b>`},
+    {l: 'Registado por', f: r => r.registado_papel === 'DIRECTOR' ? 'Clube' : r.registado_papel === 'REGIONAL' ? 'Região' : 'Missão'}, {l: 'Estado', f: r => r.estado === 'Anulado' ? 'Anulado' : ''}];
+  m.innerHTML = `<div class="card"><div class="barra"><h3>Finanças — ${esc(nomeClube(S.clube_id))}</h3>
+      <select id="fPer"><option value="mes" ${S.perF === 'mes' ? 'selected' : ''}>Mês</option><option value="ano" ${S.perF === 'ano' ? 'selected' : ''}>Ano</option></select>
+      ${S.perF === 'mes' ? `<select id="fMes">${MESES.map((x, i) => `<option value="${i + 1}" ${i + 1 === S.mesF ? 'selected' : ''}>${x}</option>`).join('')}</select>` : ''}
+      <button class="btn" id="fRec">+ Receita</button><button class="btn del" id="fDes">+ Despesa</button></div>
+      <div class="kpis" style="margin:0"><div class="kpi"><div class="v">${kz(d.saldo_inicio)}</div><div class="l">Saldo no início</div></div><div class="kpi"><div class="v" style="color:var(--verde)">${kz(d.receitas)}</div><div class="l">Receitas</div></div>
+      <div class="kpi"><div class="v" style="color:var(--verm)">${kz(d.despesas)}</div><div class="l">Despesas</div></div><div class="kpi"><div class="v">${kz(d.saldo_fim)}</div><div class="l">Saldo no fim</div></div></div></div>
+    <div class="card"><div class="barra"><h3>Movimentos (${d.lista.length})</h3><span class="muted">Toque num movimento para ver ou anular</span><button class="btn sec" id="fPdf">Balancete PDF</button><button class="btn sec" id="fCsv">CSV</button></div><div class="tw" id="fTab"></div></div>
+    <div class="card"><h3>Por categoria</h3>${tabela([{k: 'tipo', l: 'Tipo'}, {k: 'categoria', l: 'Categoria'}, {l: 'Valor', n: 1, f: r => kz(r.valor)}], d.por_categoria)}</div>`;
+  $('#fTab').innerHTML = tabela(cols, d.lista, true);
+  $$('#fTab tbody tr', m).forEach(tr => { const r = d.lista[+tr.dataset.i]; if (r.estado === 'Anulado') tr.classList.add('anul'); tr.onclick = () => verMovimento(r); });
+  $('#fPer').onchange = e => { S.perF = e.target.value; VISTAS.financas(m); };
+  if ($('#fMes')) $('#fMes').onchange = e => { S.mesF = +e.target.value; VISTAS.financas(m); };
+  $('#fCsv').onclick = () => csv('Movimentos ' + nomeClube(S.clube_id), cols.map(c => c.k === 'valor' ? {l: 'Valor (Kz)', f: r => (r.tipo === 'Despesa' ? -1 : 1) * r.valor} : c), d.lista);
+  $('#fPdf').onclick = e => baixarPdf({tipo: 'financas', clube_id: S.clube_id, de, ate}, e.target);
+  const novo = tipo => formModal('Nova ' + tipo.toLowerCase(), [
+    {k: 'data', l: 'Data', t: 'date', req: 1}, {k: 'categoria', l: 'Categoria', opt: d.categorias[tipo], req: 1}, {k: 'valor', l: 'Valor (Kz)', t: 'number', req: 1},
+    {k: 'metodo', l: 'Forma de pagamento', opt: ['', 'Numerário', 'Transferência bancária', 'Multicaixa Express', 'Outro']}, {k: 'referencia', l: 'N.º do recibo / factura'},
+    {k: 'membro_id', l: 'Membro (opcional)', opt: () => optsMembros('— nenhum —')}, {k: 'descricao', l: 'Descrição', t: 'area', full: 1}],
+    {data: String(S.ano) === hojeISO().slice(0, 4) ? hojeISO() : S.ano + '-12-31'},
+    async v => { await call('guardarMovimento', {registo: Object.assign({clube_id: S.clube_id, tipo}, v)}); VISTAS.financas(m); });
+  $('#fRec').onclick = () => novo('Receita'); $('#fDes').onclick = () => novo('Despesa');
+  const verMovimento = r => {
+    const div = document.createElement('div'); div.className = 'modal';
+    div.innerHTML = `<div class="caixa"><h3>${esc(r.tipo)} · ${esc(r.categoria)}</h3><table>${[['Data', r.data], ['Valor', kz(r.valor)], ['Descrição', r.descricao], ['Membro', r.membro], ['Forma de pagamento', r.metodo], ['Referência', r.referencia],
+      ['Registado por', r.registado_por + ' em ' + r.registado_em.slice(0, 16)], ['Estado', r.estado + (r.estado === 'Anulado' ? ' por ' + r.anulado_por + ' em ' + r.anulado_em.slice(0, 16) + ' — ' + r.motivo_anulacao : '')]]
+      .map(x => `<tr><td class="muted">${x[0]}</td><td>${esc(x[1] || '')}</td></tr>`).join('')}</table>
+      <div class="barra" style="justify-content:flex-end;margin-top:12px">${r.estado !== 'Anulado' ? '<button class="btn del" data-a="anul">Anular movimento</button>' : ''}<button class="btn sec" data-a="x">Fechar</button></div></div>`;
+    document.body.appendChild(div);
+    $('[data-a=x]', div).onclick = () => div.remove();
+    if ($('[data-a=anul]', div)) $('[data-a=anul]', div).onclick = async () => {
+      const motivo = prompt('Motivo da anulação (fica registado):'); if (motivo === null) return;
+      try { await call('anularMovimento', {id: r.id, motivo}); div.remove(); toast('Movimento anulado.'); VISTAS.financas(m); } catch (e) { toast(e.message, 1); }
+    };
+  };
+};
+
+/* ===== Transferências ===== */
+const tagEstado = e => `<span class="tag ${{Pendente: 'med', Aprovada: 'ok', Recusada: 'nao', Cancelada: 'cinza', 'Na região': 'med', 'Na Missão': 'azul', 'Concluída': 'ok', 'Aprovada ': 'ok'}[e] || ''}">${esc(e)}</span>`;
+VISTAS.transferencias = async m => {
+  const l = await call('transferencias');
+  const pend = l.filter(t => t.posso_decidir);
+  const cols = [{k: 'membro_nome', l: 'Membro'}, {k: 'origem', l: 'Origem'}, {k: 'destino', l: 'Destino'}, {k: 'tipo', l: 'Tipo'},
+    {l: 'Estado', html: 1, f: t => tagEstado(t.estado)}, {k: 'passo_actual', l: 'Aguarda'}, {l: 'Pedido em', f: t => t.pedido_em.slice(0, 10)}];
+  m.innerHTML = `<div class="card"><div class="barra"><h3>Transferências</h3>${S.clube_id ? '<button class="btn" id="tNova">+ Pedir transferência</button>' : '<span class="muted">Escolha um clube no topo para pedir uma transferência</span>'}</div>
+    <p class="muted" style="margin:0">Mesma região: aceitação do clube de destino + aprovação da região. Outra região: + aprovação da região de destino. Outra missão: região + Missão.</p></div>
+    ${pend.length ? `<div class="card pend"><h3>A aguardar a sua decisão (${pend.length})</h3><div class="tw">${tabela(cols, pend, true)}</div></div>` : ''}
+    <div class="card"><div class="barra"><h3>Todas (${l.length})</h3></div><div class="tw" id="tTodas">${tabela(cols, l, true)}</div></div>`;
+  $$('.pend tbody tr', m).forEach(tr => tr.onclick = () => verTransf(pend[+tr.dataset.i]));
+  $$('#tTodas tbody tr', m).forEach(tr => tr.onclick = () => verTransf(l[+tr.dataset.i]));
+  const verTransf = t => {
+    const div = document.createElement('div'); div.className = 'modal';
+    div.innerHTML = `<div class="caixa"><h3>${esc(t.membro_nome)}</h3><p>${tagEstado(t.estado)} ${esc(t.tipo)}<br><b>De:</b> ${esc(t.origem)}<br><b>Para:</b> ${esc(t.destino)}<br><b>Motivo:</b> ${esc(t.motivo)}</p>
+      <div class="tl">${t.passos.map(x => `<div><b>${esc(x.descricao)}</b> — ${x.estado === 'aprovado' ? '✔ aprovado' : x.estado === 'recusado' ? '✖ recusado' : 'pendente'}${x.por ? '<br><small class="muted">' + esc(x.por) + ' · ' + esc((x.em || '').slice(0, 16)) + (x.nota ? ' · ' + esc(x.nota) : '') + '</small>' : ''}</div>`).join('')}</div>
+      ${t.posso_decidir ? '<label class="muted" style="display:block">Nota (obrigatória para recusar)<textarea id="tNota" rows="2" style="width:100%"></textarea></label>' : ''}
+      <div class="barra" style="justify-content:flex-end;margin-top:12px">${t.estado !== 'Pendente' || true ? '<button class="btn sec" data-a="pdf">Ficha PDF</button>' : ''}<span style="flex:1"></span>
+      ${t.posso_cancelar ? '<button class="btn sec" data-a="cancelar">Cancelar pedido</button>' : ''}${t.posso_decidir ? '<button class="btn del" data-a="recusar">Recusar</button><button class="btn" data-a="aprovar">Aprovar</button>' : ''}<button class="btn sec" data-a="x">Fechar</button></div></div>`;
+    document.body.appendChild(div);
+    $('[data-a=x]', div).onclick = () => div.remove();
+    $('[data-a=pdf]', div).onclick = e => baixarPdf({tipo: 'transferencia', id: t.id}, e.target);
+    ['aprovar', 'recusar', 'cancelar'].forEach(a => { const b = $(`[data-a=${a}]`, div); if (b) b.onclick = async () => {
+      if (a === 'cancelar' && !confirm('Cancelar este pedido de transferência?')) return;
+      b.disabled = true;
+      try { await call('decidirTransferencia', {id: t.id, decisao: a, nota: $('#tNota', div) ? $('#tNota', div).value : ''}); div.remove(); toast('Feito.'); await recarregarClubes(); S.dados = {}; VISTAS.transferencias(m); }
+      catch (e) { toast(e.message, 1); b.disabled = false; } }; });
+  };
+  if ($('#tNova')) $('#tNova').onclick = async () => {
+    await dadosClube(['Membros']);
+    const cl = (await call('clubesDestino')).filter(c => c.id !== S.clube_id);
+    const div = document.createElement('div'); div.className = 'modal';
+    div.innerHTML = `<div class="caixa"><h3>Pedir transferência</h3><div class="form">
+      <label class="full">Membro<select id="tpM">${optsMembros('— escolha —').map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join('')}</select></label>
+      <label class="full">Destino<select id="tpT"><option value="clube">Outro clube da MSC</option><option value="missao">Outra missão / associação</option></select></label>
+      <label class="full" id="tpCL">Clube de destino<select id="tpC"><option value="">— escolha —</option>${[...new Set(cl.map(c => c.regiao))].map(rg => `<optgroup label="${esc(rg)}">${cl.filter(c => c.regiao === rg).map(c => `<option value="${c.id}">${esc(c.nome)} (${esc(c.igreja)})</option>`).join('')}</optgroup>`).join('')}</select></label>
+      <label class="full" id="tpXL" style="display:none">Missão / associação de destino<input id="tpX" placeholder="Ex.: Associação Norte de Angola"></label>
+      <label class="full">Motivo<textarea id="tpMo" rows="2"></textarea></label></div>
+      <div class="barra" style="justify-content:flex-end;margin-top:12px"><button class="btn sec" data-a="x">Cancelar</button><button class="btn" data-a="ok">Enviar pedido</button></div></div>`;
+    document.body.appendChild(div);
+    $('#tpT', div).onchange = e => { $('#tpCL', div).style.display = e.target.value === 'clube' ? '' : 'none'; $('#tpXL', div).style.display = e.target.value === 'missao' ? '' : 'none'; };
+    $('[data-a=x]', div).onclick = () => div.remove();
+    $('[data-a=ok]', div).onclick = async e => {
+      const outra = $('#tpT', div).value === 'missao';
+      e.target.disabled = true;
+      try { await call('pedirTransferencia', {membro_id: $('#tpM', div).value, clube_destino: outra ? '' : $('#tpC', div).value, missao_destino: outra ? $('#tpX', div).value : '', motivo: $('#tpMo', div).value});
+        div.remove(); toast('Pedido de transferência enviado.'); S.dados = {}; VISTAS.transferencias(m);
+      } catch (er) { toast(er.message, 1); e.target.disabled = false; }
+    };
+  };
+};
+
+/* ===== Solicitações de serviços ===== */
+const TIPOS_SOL = ['Cerimónia de admissão (lenço)', 'Investidura', 'Avaliação de classes', 'Visita / inspecção do clube', 'Formação / treinamento',
+  'Instrutor para especialidade', 'Autorização de acampamento / actividade', 'Cadernos, insígnias ou material', 'Declaração / documento', 'Outro'];
+const ACC_TXT = {aprovar: 'Aprovar', recusar: 'Recusar', concluir: 'Marcar como concluída', cancelar: 'Cancelar pedido'};
+VISTAS.solicitacoes = async m => {
+  const l = await call('solicitacoes');
+  const minhas = l.filter(s => s.accoes.includes('aprovar'));
+  const prazoTxt = s => s.estado === 'Na região' ? (s.dias_restantes > 0 ? 'Região: faltam ' + s.dias_restantes + ' dia(s)' : 'Região: termina hoje') : s.regiao_decisao === 'Sem resposta' ? 'Região não respondeu' : '';
+  const cols = [{k: 'tipo', l: 'Serviço'}, {k: 'clube', l: 'Clube'}, {k: 'regiao', l: 'Região'}, {l: 'Estado', html: 1, f: s => tagEstado(s.estado)}, {l: 'Prazo', f: prazoTxt},
+    {k: 'data_pretendida', l: 'Data pretendida'}, {l: 'Pedido em', f: s => s.criado_em.slice(0, 10)}];
+  m.innerHTML = `<div class="card"><div class="barra"><h3>Solicitações de serviços</h3>${S.clube_id ? '<button class="btn" id="sNova">+ Nova solicitação</button>' : '<span class="muted">Escolha um clube no topo para fazer uma solicitação</span>'}</div>
+    <p class="muted" style="margin:0">O pedido vai primeiro à região, que tem 14 dias para decidir. Se aprovar, segue para a Missão. Se a região não agir no prazo, o pedido passa automaticamente para a Missão com essa nota.</p></div>
+    ${minhas.length ? `<div class="card pend"><h3>A aguardar a sua decisão (${minhas.length})</h3><div class="tw">${tabela(cols, minhas, true)}</div></div>` : ''}
+    <div class="card"><div class="barra"><h3>Todas (${l.length})</h3></div><div class="tw" id="sTodas">${tabela(cols, l, true)}</div></div>`;
+  $$('.pend tbody tr', m).forEach(tr => tr.onclick = () => verSol(minhas[+tr.dataset.i]));
+  $$('#sTodas tbody tr', m).forEach(tr => tr.onclick = () => verSol(l[+tr.dataset.i]));
+  const verSol = s => {
+    const div = document.createElement('div'); div.className = 'modal';
+    div.innerHTML = `<div class="caixa"><h3>${esc(s.tipo)}</h3><p>${tagEstado(s.estado)} <b>${esc(s.clube)}</b> · ${esc(s.regiao)}${s.data_pretendida ? '<br><b>Data pretendida:</b> ' + esc(s.data_pretendida) : ''}${s.local ? '<br><b>Local:</b> ' + esc(s.local) : ''}</p>
+      <p style="background:#f4f6f9;padding:10px;border-radius:6px">${textoHtml(s.descricao)}</p>
+      ${s.estado === 'Na região' ? `<p class="muted">A região tem até <b>${esc(s.prazo_regiao)}</b> para decidir.</p>` : ''}${s.regiao_decisao === 'Sem resposta' ? `<p class="tag med" style="display:block;padding:8px">${esc(s.regiao_nota)}</p>` : ''}
+      <h3>Histórico</h3><div class="tl">${s.historico.map(h => `<div><b>${esc(h.accao)}</b><br><small class="muted">${esc(h.por)} · ${esc(h.em.slice(0, 16))}${h.nota ? ' · ' + esc(h.nota) : ''}</small></div>`).join('')}</div>
+      ${s.accoes.length ? '<label class="muted" style="display:block">Nota (obrigatória para recusar)<textarea id="sNota" rows="2" style="width:100%"></textarea></label>' : ''}
+      <div class="barra" style="justify-content:flex-end;margin-top:12px">${s.accoes.map(a => `<button class="btn ${a === 'recusar' ? 'del' : a === 'cancelar' ? 'sec' : ''}" data-acc="${a}">${ACC_TXT[a]}</button>`).join('')}<button class="btn sec" data-a="x">Fechar</button></div></div>`;
+    document.body.appendChild(div);
+    $('[data-a=x]', div).onclick = () => div.remove();
+    $$('[data-acc]', div).forEach(b => b.onclick = async () => {
+      if (b.dataset.acc === 'cancelar' && !confirm('Cancelar esta solicitação?')) return;
+      b.disabled = true;
+      try { await call('decidirSolicitacao', {id: s.id, decisao: b.dataset.acc, nota: $('#sNota', div) ? $('#sNota', div).value : ''}); div.remove(); toast('Feito.'); VISTAS.solicitacoes(m); }
+      catch (e) { toast(e.message, 1); b.disabled = false; }
+    });
+  };
+  if ($('#sNova')) $('#sNova').onclick = () => formModal('Nova solicitação — ' + nomeClube(S.clube_id), [
+    {k: 'tipo', l: 'Serviço pedido', opt: TIPOS_SOL, full: 1}, {k: 'descricao', l: 'Descreva o pedido (o quê, para quantos, observações)', t: 'area', req: 1, full: 1},
+    {k: 'data_pretendida', l: 'Data pretendida', t: 'date'}, {k: 'local', l: 'Local'}], {tipo: TIPOS_SOL[0]},
+    async v => { await call('criarSolicitacao', {registo: Object.assign({clube_id: S.clube_id}, v)}); VISTAS.solicitacoes(m); });
 };
 
 /* ===== Mérito (pontuação) ===== */
